@@ -179,17 +179,17 @@
   <span>Sound</span>
 </button>
 
-<!-- Telegram Login Widget (loads once; button appears in Mini Game card) -->
-<script async src="https://telegram.org/js/telegram-widget.js?22"></script>
+<!-- Load Telegram widget library once (parses dynamically injected button) -->
+<script src="https://telegram.org/js/telegram-widget.js?22"></script>
 
 <script>
 /* ======= CONFIG (Sheets for Ranks) ======= */
-var SHEET_ID   = "YOUR_SHEET_ID_HERE"; // set later
-var SHEET_NAME = "Referral";           // set later
+var SHEET_ID   = "https://docs.google.com/spreadsheets/d/13QdwM_rHo8SYkLeQ293V4WJjAE9Hb3ReMk8wQn3Dmdw/edit?gid=0#gid=0"; // TODO: set
+var SHEET_NAME = "Referral";           // or your sheet/tab name
 var MAP = { rank:["rank","#"], username:["username","user","player","name"], points:["points","score","total","referrals"], avatar:["avatar","image","img","photo","icon","avatarurl"], week:["week","period"] };
 
 /* ======= CONFIG (Apps Script endpoint for Telegram linking) ======= */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbzUxvNXZruHRkjFLsIBNWFuDAbLd6nIjgrP8kDVyulMG7RPUXfEE2G7ZP6_IgCcBPfKRQ/exec"; // <-- Apps Script Web App URL
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzUxvNXZruHRkjFLsIBNWFuDAbLd6nIjgrP8kDVyulMG7RPUXfEE2G7ZP6_IgCcBPfKRQ/exec"; // TODO: set
 
 /* Helpers */
 function $(s,el){return (el||document).querySelector(s)}
@@ -198,15 +198,28 @@ function fmt(n){n=Number(n||0);if(n>=1000)return (Math.round(n/100)/10).toLocale
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function faceBg(url){return url?'url("'+url+'")':'url("data:image/svg+xml;utf8,'+encodeURIComponent(svgAvatar())+'")'}
 function svgAvatar(){return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23a0c4ff'/><stop offset='100%' stop-color='%238f6bff'/></linearGradient></defs><rect width='64' height='64' rx='16' fill='url(%23g)'/><circle cx='32' cy='26' r='12' fill='white' opacity='.9'/><rect x='14' y='40' width='36' height='16' rx='8' fill='white' opacity='.9'/></svg>"}
-function getParam(k){var m=location.search.match(new RegExp("[?&]"+k+"=([^&]+)","i"));return m?decodeURIComponent(m[1]):null}
 function pickIndex(headers, aliases){var L=headers.map(h=>String(h||'').toLowerCase());for(var i=0;i<aliases.length;i++){var a=aliases[i];var j=L.findIndex(h=>h.indexOf(a)>-1);if(j>-1)return j;}return -1}
-function fetchGViz(){var url="https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:json&sheet="+encodeURIComponent(SHEET_NAME);
-  return fetch(url,{cache:"no-store"}).then(r=>r.text()).then(text=>{var j=(text.match(/google\.visualization\.Query\.setResponse\((.*)\);?/s)||[])[1]; if(!j) throw new Error("GViz parse failed");
-    var data=JSON.parse(j); var headers=data.table.cols.map(c=>c.label||c.id||""); var rows=data.table.rows.filter(r=>r&&r.c).map(r=> r.c.map(c=> c?(c.f!=null?c.f:c.v):"")); return {headers,rows};});}
-function normalize(payload){var h=payload.headers, rows=payload.rows; var ri=pickIndex(h,MAP.rank), ui=pickIndex(h,MAP.username), pi=pickIndex(h,MAP.points), ai=pickIndex(h,MAP.avatar), wi=pickIndex(h,MAP.week);
+function fetchGViz(){
+  var url="https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:json&sheet="+encodeURIComponent(SHEET_NAME);
+  return fetch(url,{cache:"no-store"}).then(r=>r.text()).then(text=>{
+    var j=(text.match(/google\.visualization\.Query\.setResponse\((.*)\);?/s)||[])[1]; if(!j) throw new Error("GViz parse failed");
+    var data=JSON.parse(j);
+    var headers=data.table.cols.map(c=>c.label||c.id||"");
+    var rows=data.table.rows.filter(r=>r&&r.c).map(r=> r.c.map(c=> c?(c.f!=null?c.f:c.v):""));
+    return {headers,rows};
+  });
+}
+function normalize(payload){
+  var h=payload.headers, rows=payload.rows;
+  var ri=pickIndex(h,MAP.rank), ui=pickIndex(h,MAP.username), pi=pickIndex(h,MAP.points), ai=pickIndex(h,MAP.avatar), wi=pickIndex(h,MAP.week);
   if(ui<0 || pi<0 || wi<0) throw new Error("Missing required columns: Username, Points, Week");
-  return rows.map(r=>({ rank:(ri>-1? Number(String(r[ri]).replace(/[^\d.\-]/g,'')) : null), username:String(r[ui]||"").trim(),
-    points:Number(String(r[pi]).replace(/[^\d.\-]/g,''))||0, avatar:String((ai>-1? r[ai] :"")||"").trim(), week:String(r[wi]||"").trim() })).filter(x=>x.username);}
+  return rows.map(r=>({ rank:(ri>-1? Number(String(r[ri]).replace(/[^\d.\-]/g,'')) : null),
+    username:String(r[ui]||"").trim(),
+    points:Number(String(r[pi]).replace(/[^\d.\-]/g,''))||0,
+    avatar:String((ai>-1? r[ai] :"")||"").trim(),
+    week:String(r[wi]||"").trim()
+  })).filter(x=>x.username);
+}
 
 /* App State */
 let state={tab:'home'}; let ALL=[],WEEKS=[],CUR_WEEK='',TOP100=[];
@@ -387,16 +400,9 @@ function renderMiniGame(){
 
     <div class="card">
       <h3>Login / Link Account</h3>
-      <p class="tip">Log in with <b>Telegram</b> so we can recognize you across visits. (This uses Telegram’s official login, verified in a Google Apps Script — no backend needed.)</p>
+      <p class="tip">Log in with <b>Telegram</b> so we can recognize you across visits. (Official Telegram login verified by a Google Apps Script.)</p>
       <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-        <!-- Telegram Login Button -->
-        <script async src="https://telegram.org/js/telegram-widget.js?22"
-          data-telegram-login="wytestingposting_bot"
-          data-size="large"
-          data-userpic="false"
-          data-onauth="onTelegramAuth"
-          data-request-access="write"></script>
-
+        <div id="tg-login"></div>
         <div style="font-size:12px;color:#b7c3ff">Status: <b>${linked ? 'Linked ✅ ('+esc(who)+')' : 'Not linked'}</b></div>
       </div>
     </div>
@@ -420,6 +426,20 @@ function renderMiniGame(){
       <div class="tip" id="mgTip">Tap / Space to flap. Don’t hit the chips!</div>
     </div>
   `;
+
+  // Inject Telegram login script dynamically so it actually renders
+  const mount = document.getElementById('tg-login');
+  if(mount){
+    const s = document.createElement('script');
+    s.src = "https://telegram.org/js/telegram-widget.js?22";
+    s.async = true;
+    s.setAttribute('data-telegram-login', 'wytestingposting_bot'); // your bot
+    s.setAttribute('data-size', 'large');
+    s.setAttribute('data-userpic', 'false');
+    s.setAttribute('data-onauth', 'onTelegramAuth');
+    s.setAttribute('data-request-access', 'write');
+    mount.appendChild(s);
+  }
 
   const canvas = $('#mgCanvas'), ctx = canvas.getContext('2d');
   const title = $('#mgTitle'), tip = $('#mgTip');
@@ -567,7 +587,6 @@ render(); moveInk(0);
 /* ===== Telegram auth callback: verifies & stores local identity ===== */
 async function onTelegramAuth(user){
   try{
-    // Ask once for Rico.Bet username (optional; can be empty and set later)
     const rico = prompt("Enter your Rico.Bet username (optional now, you can set later):", "") || "";
     const res = await fetch(GAS_URL, {
       method:'POST',
@@ -576,12 +595,10 @@ async function onTelegramAuth(user){
     });
     const j = await res.json();
     if(!j.ok){ alert("Telegram link failed: " + (j.error || "unknown")); return; }
-    // Save locally so your games/UX recognize the player
     localStorage.setItem('player_provider','telegram');
     localStorage.setItem('player_provider_id', j.user.id);
     localStorage.setItem('player_name', j.user.ricoUsername || j.user.displayName || j.user.username || ('tg_'+j.user.id));
     alert("Linked with Telegram ✅");
-    // Re-render Mini Game tab to update status text
     if(state.tab==='minigame') renderMiniGame();
   }catch(e){
     alert("Network error linking Telegram");
