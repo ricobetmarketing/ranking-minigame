@@ -123,7 +123,7 @@
     <svg viewBox="0 0 24 24" class="ic"><path d="M4 10h4l5-4v12l-5-4H4zM17 8a5 5 0 010 8"/></svg><span>Sound</span>
   </button>
 
-  <!-- Login Gate (opens ONLY after Mini Game click if not linked and no token) -->
+  <!-- Login Gate (only opens from Mini Game tab if not linked) -->
   <div id="gate" class="modalBackdrop hidden" role="dialog" aria-modal="true">
     <div class="modalCard">
       <button id="gateClose" class="closeX" aria-label="Close">✕</button>
@@ -136,20 +136,19 @@
         <input id="ricoInput" class="inp" placeholder="ricobet_username"/>
         <button id="btnBind" class="btn btnPrimary">Save & Continue</button>
       </div>
-      <p class="dim" style="margin-top:8px">We unlock instantly and also send to Google Sheets.</p>
+      <p class="dim" id="gateHint" style="margin-top:8px">We unlock instantly and also send to Google Sheets.</p>
     </div>
   </div>
 
-  <!-- Telegram widget library (not mounted until needed) -->
   <script src="https://telegram.org/js/telegram-widget.js?22"></script>
 
 <script>
-/* ===== CONFIG (replace sheet IDs later when you wire the leaderboard) ===== */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxo_JlcM5rL9v7quZ_HViaSStZ9L7pAPCZ_E1YUHsIGf7KV8fs4MRo2NBkb4qI7x1i6wA/exec"; // your Apps Script Web App
-const SHEET_ID  = "1rJg4RYn0AkvsqhVGk5CwhZrYNz0gFC6_7ZPiDXigU-o"; // leaderboard sheet (you can change later)
+/* ===== CONFIG ===== */
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxo_JlcM5rL9v7quZ_HViaSStZ9L7pAPCZ_E1YUHsIGf7KV8fs4MRo2NBkb4qI7x1i6wA/exec";
+const SHEET_ID  = "1rJg4RYn0AkvsqhVGk5CwhZrYNz0gFC6_7ZPiDXigU-o";
 const SHEET_GID = "0";
 
-/* ===== tiny helpers ===== */
+/* ===== helpers ===== */
 const $=(s,el)=> (el||document).querySelector(s);
 const $all=(s,el)=> Array.from((el||document).querySelectorAll(s));
 const fmt=n=>{n=Number(n||0);return n>=1000?(Math.round(n/100)/10).toLocaleString()+"K":n.toLocaleString()};
@@ -161,33 +160,40 @@ const qs = new URLSearchParams(location.search);
 /* ===== state ===== */
 let state={tab:'home'};
 let ALL=[],WEEKS=[],CUR_WEEK='',TOP100=[];
-const isLinked=()=> !!localStorage.getItem('auth_token') || !!localStorage.getItem('player_provider_id');
 
-/* ===== gate (only when Mini Game tab clicked) ===== */
+/* Linked check (one-time) */
+const isLinked = () =>
+  localStorage.getItem('linked') === 'true' ||
+  !!localStorage.getItem('player_provider_id') ||
+  !!localStorage.getItem('auth_token');
+
+/* ===== gate ===== */
 function openGate(){
-  const m = $('#gate');
-  if(!m) return;
-  m.classList.remove('hidden');
+  if (state.tab !== 'minigame') return;  // ✅ only Mini Game can open it
+  const m = $('#gate'); if (m) m.classList.remove('hidden');
 }
-function closeGate(){ $('#gate').classList.add('hidden'); }
-/* finalize link: instant local unlock + fire-and-forget to GAS */
+function closeGate(){ $('#gate')?.classList.add('hidden'); }
+
+/* finalize link */
 async function finalizeLink(username){
-  // local unlock (instant)
+  localStorage.setItem('linked','true');
   localStorage.setItem('player_provider','telegram');
   localStorage.setItem('player_provider_id', localStorage.getItem('player_provider_id') || ('guest-'+Date.now()));
-  localStorage.setItem('player_name', username || 'player');
-  // call GAS in background (non-blocking, no alerts)
+  localStorage.setItem('player_name', username || localStorage.getItem('player_name') || 'player');
+
   try{
     await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       kind:'register_from_page',
       ricobet_username: username || '',
-      // optional hints if Telegram opened the page inside webapp:
       telegram_id: localStorage.getItem('tg_id')||'',
       telegram_username: localStorage.getItem('tg_username')||''
     })});
-  }catch(e){ /* silent */ }
+  }catch(e){}
+
   closeGate();
-  state.tab='minigame'; render();
+  state.tab='minigame';
+  render();
+  setTimeout(()=>{ try{document.getElementById('mgStart')?.focus();}catch{} },150);
 }
 
 /* ===== nav / router ===== */
@@ -197,6 +203,9 @@ function render(){
     : state.tab==='terms' ? 'Terms & FAQ'
     : state.tab==='community' ? 'Community'
     : state.tab==='minigame' ? 'Mini Game' : 'Referral Race';
+
+  /* ✅ force-close gate on any non-Mini-Game view */
+  if (state.tab !== 'minigame') closeGate();
 
   $all('.iconnav .itab').forEach(b=>b.classList.toggle('active',b.dataset.tab===state.tab));
   moveInk(parseInt(document.querySelector('.iconnav .itab.active')?.dataset.idx||'0',10));
@@ -222,7 +231,7 @@ function renderHome(){
     </div>`;
 }
 
-/* Leaderboard */
+/* Leaderboard (Google Visualization JSON) */
 async function fetchGViz(){
   const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${encodeURIComponent(SHEET_GID)}`;
   const text=await fetch(url,{cache:"no-store"}).then(r=>r.text());
@@ -319,7 +328,7 @@ async function reportScore({game,points,week=""}){
   try{
     await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({kind:'score',token,userId,userName,game,points,week})});
-  }catch(e){/* silent */}
+  }catch(e){}
 }
 
 /* Mini games */
@@ -402,21 +411,17 @@ function renderMiniGame(){
   stopGame();
 }
 
-/* bottom nav: ONLY open gate when Mini Game is clicked and not linked */
+/* bottom nav: open gate only when Mini Game clicked and not linked */
 $all('.iconnav .itab').forEach(btn=>{
   btn.addEventListener('click',()=>{
     const tab=btn.getAttribute('data-tab');
     state.tab=tab;
-    if(tab==='minigame'){
-      if(!isLinked()) openGate();
-    } else {
-      closeGate();
-    }
+    if(tab==='minigame' && !isLinked()) openGate();
     render();
   });
 });
 
-/* gate buttons */
+/* gate buttons & UX */
 document.addEventListener('click',e=>{
   if(e.target.id==='gateClose') closeGate();
   if(e.target.id==='btnBind'){
@@ -424,11 +429,28 @@ document.addEventListener('click',e=>{
     if(!v){ alert('Please enter ricobet_username'); return; }
     finalizeLink(v);
   }
+  if(e.target.id==='startBot'){
+    localStorage.setItem('await_bot_return','1');
+    $('#gateHint').textContent = 'After you enter your username in the bot, tap PLAY NOW to return here.';
+  }
 });
 
-/* Handle SendPulse deep link: ?token=... → whoami → go to Mini Game */
-(async function bootAuthFromToken(){
-  const token = qs.get('token');
+/* Nudge when coming back from bot */
+window.addEventListener('focus',()=>{
+  if(localStorage.getItem('await_bot_return')==='1' && !isLinked()){
+    $('#gateHint').textContent = 'Great! Now tap PLAY NOW in the bot or paste your username above.';
+  }
+});
+
+/* === Deep links ===
+   ?token=...&play=1  → whoami, mark linked, go Mini Game
+   ?rico=username&play=1 → finalizeLink(username), go Mini Game
+*/
+(async function bootAuthFromParams(){
+  const play = qs.get('play') === '1';
+  const rico = (qs.get('rico')||'').trim();
+  const token = (qs.get('token')||'').trim();
+
   if(token){
     localStorage.setItem('auth_token', token);
     try{
@@ -440,10 +462,18 @@ document.addEventListener('click',e=>{
         localStorage.setItem('player_name', j.user.rico_username || j.user.telegram_username || 'player');
         localStorage.setItem('tg_id', String(j.user.telegram_id||''));
         localStorage.setItem('tg_username', j.user.telegram_username||'');
+        localStorage.setItem('linked','true');
       }
-    }catch(e){/* silent */}
-    state.tab='minigame';
+    }catch(e){}
+    if(play){ state.tab='minigame'; render(); return; }
   }
+
+  if(rico && !isLinked()){
+    await finalizeLink(rico);
+    if(play){ return; }
+  }
+
+  if(play){ state.tab='minigame'; }
 })();
 
 /* boot UI */
