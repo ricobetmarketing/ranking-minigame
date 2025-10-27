@@ -142,10 +142,9 @@
       <p class="dim">1) Login with Telegram → 2) Tap “Start the Bot” → 3) Enter ricobet_username → 4) Play</p>
       <div class="row" style="margin-top:8px"><div id="tg-login-gate"></div></div>
       <div class="row" style="margin-top:8px">
-        <!-- ALWAYS CLICKABLE NOW -->
         <a id="startBot" class="btn btnPrimary" href="https://t.me/ricobet_minigamebot?start=play" target="_blank" rel="noopener">Start the Bot</a>
       </div>
-      <div id="userRow" class="row hidden" style="margin-top:8px">
+      <div id="userRow" class="row" style="margin-top:8px">
         <input id="ricoInput" class="inp" placeholder="ricobet_username"/>
         <button id="btnBind" class="btn btnPrimary">Save & Continue</button>
       </div>
@@ -160,7 +159,7 @@
   /* ===== CONFIG ===== */
   const GAS_URL = "https://script.google.com/macros/s/AKfycbwJJEYwLfmyZ0A87hUCEHbRI7xBWNrsZdmfCjm5VDdShP9xFlj8KGHD5D-vZu_b2EVQ1w/exec";
   const TG_BOT_USERNAME = "ricobet_minigamebot";
-  const SHEET_ID = "1rJg4RYn0AkvsqhVGk5CwhZrYNz0gFC6_7ZPiDXigU-o"; // your sheet
+  const SHEET_ID = "1rJg4RYn0AkvsqhVGk5CwhZrYNz0gFC6_7ZPiDXigU-o"; // ranking sheet
   const SHEET_GID = "0";
 
   /* ===== Helpers ===== */
@@ -187,28 +186,28 @@
     s.setAttribute('data-size','large'); s.setAttribute('data-userpic','false');
     s.setAttribute('data-onauth','onTelegramAuth'); s.setAttribute('data-request-access','write');
     mount.appendChild(s);
-    $('#userRow').classList.add('hidden');
   }
-  async function onTelegramAuth(user){
-    TG_TEMP_USER=user;
-    $('#userRow').classList.remove('hidden');
-  }
+  async function onTelegramAuth(user){ TG_TEMP_USER=user; }
   window.onTelegramAuth=onTelegramAuth;
 
+  // Unlock and send username — even if Telegram login is missing
   async function finalizeLink(ricoUsername){
+    // local unlock first (instant)
+    const pseudoId = 'guest-' + Date.now();
+    const uid = TG_TEMP_USER?.id || pseudoId;
+    const display = TG_TEMP_USER?.first_name || TG_TEMP_USER?.username || ricoUsername || pseudoId;
+
+    localStorage.setItem('player_provider','telegram');
+    localStorage.setItem('player_provider_id', String(uid));
+    localStorage.setItem('player_name', ricoUsername || display);
+
+    // try to notify Apps Script (non-blocking)
     try{
-      const res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({kind:'telegram',data:TG_TEMP_USER,ricoUsername})});
-      const j=await res.json(); if(!j.ok) throw new Error(j.error||'fail');
-      localStorage.setItem('player_provider','telegram');
-      localStorage.setItem('player_provider_id', j.user?.id || TG_TEMP_USER?.id || '');
-      localStorage.setItem('player_name', j.user?.ricoUsername || ricoUsername || j.user?.displayName || j.user?.username || ('tg_'+(j.user?.id||'')));
-    }catch(e){
-      // allow anyway
-      localStorage.setItem('player_provider','telegram');
-      localStorage.setItem('player_provider_id', TG_TEMP_USER?.id || '');
-      localStorage.setItem('player_name', ricoUsername || TG_TEMP_USER?.username || ('tg_'+(TG_TEMP_USER?.id||'')));
-    }
+      const payload = { kind:'telegram', data: TG_TEMP_USER || { id: uid, username: display }, ricoUsername };
+      await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    }catch(e){ /* ignore */ }
+
+    // go to Mini Game
     $('#gate').classList.add('hidden'); state.tab='minigame'; render(); renderMiniGame();
   }
 
@@ -339,10 +338,9 @@
     const userName=localStorage.getItem('player_name')||"";
     if(!userId) return;
     try{
-      const res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+      await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({kind:'score',userId,userName,game,points,week})});
-      const j=await res.json(); if(!j.ok) console.warn('Score not saved:',j.error||'unknown');
-    }catch(e){console.warn('Network error saving score')}
+    }catch(e){/* ignore */}
   }
 
   /* ===== Mini games ===== */
@@ -432,20 +430,18 @@
   $all('.iconnav .itab').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const tab=btn.getAttribute('data-tab'); state.tab=tab;
-      // Ensure modal is ONLY shown for Mini Game; hide otherwise
       if(tab==='minigame' && !isLinked()){ openGate(); } else { $('#gate').classList.add('hidden'); }
       render();
     });
   });
 
-  // Modal close button
+  // Modal buttons
   document.addEventListener('click',e=>{
     if(e.target && e.target.id==='gateClose'){ $('#gate').classList.add('hidden'); }
     if(e.target && e.target.id==='btnBind'){
       const v=($('#ricoInput').value||'').trim();
       if(!v){alert('Please enter ricobet_username');return}
-      if(!TG_TEMP_USER){alert('Please login with Telegram first');return}
-      finalizeLink(v);
+      finalizeLink(v); // works even if Telegram not logged in
     }
   });
 
