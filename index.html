@@ -9,21 +9,24 @@
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;overflow-x:hidden;background:radial-gradient(1000px 700px at 50% -10%, #1b1c3f 0%, transparent 60%), linear-gradient(180deg,#0b0c1a,#070813);color:var(--ink);font:15px/1.5 Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
   .app{max-width:520px;margin:0 auto;min-height:100dvh;display:grid;grid-template-rows:auto 1fr;overflow-x:hidden}
+
   header{position:sticky;top:0;background:linear-gradient(180deg,#10112a,#0d0e23);border-bottom:1px solid var(--edge);padding:12px 16px;z-index:20}
   .hrow{display:flex;align-items:center;justify-content:space-between}
   .title{font-weight:900;font-size:18px;letter-spacing:.4px}
+
   main{padding:14px 14px 116px}
   .card{background:linear-gradient(180deg,#151533,#10112a);border:1px solid var(--edge);border-radius:16px;padding:14px;margin-bottom:12px}
   h2{margin:0 0 8px;font-size:18px} h3{margin:0 0 8px;font-size:16px} p{margin:0 0 8px;color:#dfe5ff}
 
-  /* Ranks */
+  /* ===== RANKING ===== */
   .rr{--ink:#2b2350; --gold:#ffcf5a; --silver:#dbe6ff; --bronze:#ffd9b3; width:100%}
-  .rr .controls{display:flex;align-items:center;gap:8px}
+  .rr .controls{display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px}
   .rr .select,.rr .wbtn{appearance:none;border:0;border-radius:10px;padding:9px 10px;font-weight:800}
   .rr .select{background:#ffffffbf;color:#2d1b55}
   .rr .wbtn{background:#ffd86a;color:#3a2400;box-shadow:0 4px 0 rgba(0,0,0,.12);cursor:pointer}
   .rr .wbtn:active{transform:translateY(1px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
-  .rr .podiumCard{margin-top:12px;border-radius:22px;padding:16px 12px 12px;width:100%;background:linear-gradient(180deg,#f0e6ff,#f9f1ff);border:1px solid rgba(255,255,255,.55);color:var(--ink);box-shadow:0 24px 60px rgba(36,18,66,.35);overflow:hidden}
+
+  .rr .podiumCard{margin-top:12px;border-radius:22px;padding:16px 12px 12px;background:linear-gradient(180deg,#f0e6ff,#f9f1ff);border:1px solid rgba(255,255,255,.55);color:var(--ink);box-shadow:0 24px 60px rgba(36,18,66,.35);overflow:hidden}
   .rr .cap{display:flex;justify-content:center;gap:10px;align-items:center;color:#876dc9;font-weight:900;font-size:12px;letter-spacing:.4px;margin-bottom:10px}
   .rr .podium{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:10px;align-items:end}
   .rr .step{position:relative;border-radius:16px 16px 10px 10px;background:linear-gradient(180deg,#ffffff,#f0ecff);padding:10px 8px 12px;border:1px solid rgba(44,26,74,.12);box-shadow: inset 0 -12px 18px rgba(100,70,180,.10), 0 8px 18px rgba(0,0,0,.10);display:grid;place-items:center;min-height:86px}
@@ -58,15 +61,12 @@
   .iconnav .itab.active,.iconnav .itab:focus-visible{color:#fff}
   .iconnav .inkbar{position:absolute;bottom:10px;height:44px;z-index:0;pointer-events:none;left:12px;right:12px; width: calc((100% - 24px - 8px*4)/5); border-radius:16px;background:radial-gradient(90% 140% at 10% 0%,var(--hot) 0%,var(--hot2) 60%,#ffcabf 100%); box-shadow:0 12px 26px rgba(255,79,216,.35), inset 0 -2px 6px rgba(0,0,0,.18); transform:translateX(calc(var(--ix) * (100% + 8px))); transition:transform .28s cubic-bezier(.22,.9,.24,1), width .15s ease}
 
-  /* FAQ & community (short) */
+  /* FAQ/community bits */
   details{background:#14143a;border:1px solid var(--edge);border-radius:12px;padding:10px} details+details{margin-top:8px} summary{cursor:pointer;font-weight:800}
   .socialCard{background: radial-gradient(120% 140% at 0% 0%, #5d2fff 0%, #4c22d8 35%, #3b1dbb 70%);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:12px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
   .socialItem{display:grid;grid-template-columns:1fr auto;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:10px 12px}
-  .sLeft{display:flex;align-items:center;gap:10px;min-width:0}
-  .sIcon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#fff;color:#111;box-shadow:0 6px 14px rgba(0,0,0,.18)}
-  .subBtn{appearance:none;border:0;padding:9px 14px;border-radius:10px;background:#fff;color:#222;font-weight:900;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.12)}
 
-  /* Sound toggle */
+  /* Sound */
   .soundBtn{position:fixed;right:12px;bottom:calc(72px + env(safe-area-inset-bottom,0));background:rgba(255,255,255,.95);color:#111;border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:10px 12px;display:none;gap:8px;align-items:center;font-weight:900;z-index:1100;box-shadow:0 10px 24px rgba(0,0,0,.25)}
   .soundBtn.show{display:inline-flex} .soundBtn.active{background:linear-gradient(90deg,#ffd86a,#ffc24d)} .soundBtn .ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   @media (min-width:560px){.soundBtn{bottom:calc(92px + env(safe-area-inset-bottom,0))}}
@@ -82,7 +82,7 @@
   .mg-canvas{display:block;width:100%;height:340px;background:linear-gradient(180deg,#0a0e24,#060814)}
   .tip{font-size:12px;color:#b7c3ff;margin-top:8px}
 
-  /* Login gate modal */
+  /* Login Gate Modal */
   .hidden{display:none}
   .modalBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.55); display:grid; place-items:center; z-index:2000;}
   .modalCard{width:min(420px,92vw); border-radius:16px; padding:16px; background:linear-gradient(180deg,#151533,#10112a); border:1px solid rgba(255,255,255,.12); box-shadow:0 18px 38px rgba(0,0,0,.35)}
@@ -103,6 +103,7 @@
   <main id="view"></main>
 </div>
 
+<!-- Bottom Nav -->
 <nav class="iconnav" aria-label="Primary">
   <div class="inkbar" aria-hidden="true"></div>
   <button type="button" class="itab active" data-tab="home" data-idx="0" aria-label="Home">
@@ -127,13 +128,14 @@
   </button>
 </nav>
 
+<!-- Background Music -->
 <audio id="bgm" src="theme.mp3" preload="auto" loop playsinline autoplay></audio>
 <button id="soundBtn" class="soundBtn" aria-label="Toggle sound" title="Sound">
   <svg viewBox="0 0 24 24" class="ic"><path d="M4 10h4l5-4v12l-5-4H4zM17 8a5 5 0 010 8"/></svg>
   <span>Sound</span>
 </button>
 
-<!-- Login Gate Modal -->
+<!-- Login Gate Modal (appears only when Mini Game tab is clicked and user not linked) -->
 <div id="gate" class="modalBackdrop hidden" role="dialog" aria-modal="true">
   <div class="modalCard">
     <h3>Login required</h3>
@@ -146,15 +148,15 @@
   </div>
 </div>
 
-<!-- Telegram script (library only; we inject buttons dynamically too) -->
+<!-- Telegram Widget loader (library only) -->
 <script src="https://telegram.org/js/telegram-widget.js?22"></script>
 
 <script>
 /* ======= CONFIG ======= */
-var SHEET_ID   = "13QdwM_rHo8SYkLeQ293V4WJjAE9Hb3ReMk8wQn3Dmdw"; // leaderboard sheet (for gviz demo)
+var SHEET_ID   = "13QdwM_rHo8SYkLeQ293V4WJjAE9Hb3ReMk8wQn3Dmdw"; // optional: used for demo GViz
 var SHEET_NAME = "Referral";
-const GAS_URL  = "https://script.google.com/macros/s/AKfycbzUxvNXZruHRkjFLsIBNWFuDAbLd6nIjgrP8kDVyulMG7RPUXfEE2G7ZP6_IgCcBPfKRQ/exec"; // <- Your Apps Script Web App URL
-const TG_BOT_USERNAME = "wytestingposting_bot"; // <- your bot username
+const GAS_URL  = "https://script.google.com/macros/s/AKfycbzUxvNXZruHRkjFLsIBNWFuDAbLd6nIjgrP8kDVyulMG7RPUXfEE2G7ZP6_IgCcBPfKRQ/exec";
+const TG_BOT_USERNAME = "wytestingposting_bot";
 
 /* ======= HELPERS ======= */
 function $(s,el){return (el||document).querySelector(s)}
@@ -164,11 +166,12 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;',
 function faceBg(url){return url?'url("'+url+'")':'url("data:image/svg+xml;utf8,'+encodeURIComponent(svgAvatar())+'")'}
 function svgAvatar(){return "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23a0c4ff'/><stop offset='100%' stop-color='%238f6bff'/></linearGradient></defs><rect width='64' height='64' rx='16' fill='url(%23g)'/><circle cx='32' cy='26' r='12' fill='white' opacity='.9'/><rect x='14' y='40' width='36' height='16' rx='8' fill='white' opacity='.9'/></svg>"}
 function pickIndex(headers, aliases){var L=headers.map(h=>String(h||'').toLowerCase());for(var i=0;i<aliases.length;i++){var a=aliases[i];var j=L.findIndex(h=>h.indexOf(a)>-1);if(j>-1)return j;}return -1}
+function unique(arr){return Array.from(new Set(arr))}
 
-/* ======= App State ======= */
+/* ======= STATE ======= */
 let state={tab:'home'}; let ALL=[],WEEKS=[],CUR_WEEK='',TOP100=[];
 
-/* ======= Auth Gate ======= */
+/* ======= AUTH GATE ======= */
 function isLinked(){ return localStorage.getItem('player_provider')==='telegram'; }
 function openGate(){
   const m = $('#gate');
@@ -189,7 +192,7 @@ function openGate(){
   };
 }
 
-/* ======= Navigation / Router ======= */
+/* ======= NAV / ROUTER ======= */
 function moveInk(ix){ document.querySelector('.iconnav').style.setProperty('--ix', ix); }
 function render(){
   $('#hdrTitle').textContent = state.tab==='ranks' ? 'Referral Ranking' :
@@ -206,12 +209,12 @@ function render(){
   else renderHome();
 }
 
-/* ======= Home ======= */
+/* ======= HOME ======= */
 function renderHome(){
   $('#view').innerHTML = `
     <div class="card">
       <h2>Referral Race</h2>
-      <p>Invite friends, climb the leaderboard, and win weekly rewards.</p>
+      <p>Invite friends, climb the leaderboard, and win rewards.</p>
       <ul style="margin:6px 0 0 18px;color:#dfe5ff">
         <li>Share your referral link with friends.</li>
         <li>Every verified signup = <b>+1 point</b>.</li>
@@ -220,7 +223,7 @@ function renderHome(){
     </div>`;
 }
 
-/* ======= Ranks (demo via gviz; replace with your own) ======= */
+/* ======= RANKS (Week + Day) ======= */
 function fetchGViz(){
   var url="https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:json&sheet="+encodeURIComponent(SHEET_NAME);
   return fetch(url,{cache:"no-store"}).then(r=>r.text()).then(text=>{
@@ -233,66 +236,159 @@ function fetchGViz(){
 }
 function normalize(payload){
   var h=payload.headers, rows=payload.rows;
-  var ri=pickIndex(h,["rank","#"]), ui=pickIndex(h,["username","user","player","name"]), pi=pickIndex(h,["points","score","total","referrals"]), ai=pickIndex(h,["avatar","image","img","photo","icon","avatarurl"]), wi=pickIndex(h,["week","period"]);
+  var ri=pickIndex(h,["rank","#"]),
+      ui=pickIndex(h,["username","user","player","name"]),
+      pi=pickIndex(h,["points","score","total","referrals"]),
+      ai=pickIndex(h,["avatar","image","img","photo","icon","avatarurl"]),
+      wi=pickIndex(h,["week","period"]),
+      di=pickIndex(h,["date","day","created","timestamp"]); // NEW: date per row (optional)
   if(ui<0 || pi<0 || wi<0) throw new Error("Missing required columns: Username, Points, Week");
-  return rows.map(r=>({ rank:(ri>-1? Number(String(r[ri]).replace(/[^\d.\-]/g,'')) : null), username:String(r[ui]||"").trim(), points:Number(String(r[pi]).replace(/[^\d.\-]/g,''))||0, avatar:String((ai>-1? r[ai] :"")||"").trim(), week:String(r[wi]||"").trim() })).filter(x=>x.username);
+  return rows.map(r=>({
+    rank:(ri>-1? Number(String(r[ri]).replace(/[^\d.\-]/g,'')) : null),
+    username:String(r[ui]||"").trim(),
+    points:Number(String(r[pi]).replace(/[^\d.\-]/g,''))||0,
+    avatar:String((ai>-1? r[ai] :"")||"").trim(),
+    week:String(r[wi]||"").trim(),
+    date: di>-1 ? String(r[di]||"").trim() : "" // free-form like 2025-01-03
+  })).filter(x=>x.username);
 }
 function renderRanks(){
   $('#view').innerHTML = `
   <div class="rr">
-    <div class="card"><div class="controls">
-      <select id="weekSel" class="select"></select>
-      <button id="prevBtn" class="wbtn" type="button">◀</button>
-      <button id="nextBtn" class="wbtn" type="button">▶</button>
-    </div></div>
+    <div class="card">
+      <div class="controls">
+        <select id="weekSel" class="select" title="Week"></select>
+        <select id="daySel" class="select" title="Day (inside week)"></select>
+        <button id="prevBtn" class="wbtn" type="button" title="Previous">◀</button>
+        <button id="nextBtn" class="wbtn" type="button" title="Next">▶</button>
+      </div>
+    </div>
+
     <div class="podiumCard">
-      <div class="cap">Weekly Podium</div>
+      <div class="cap">Podium</div>
       <div class="podium">
         <div class="step s2"><div class="badge b2">2</div><div class="av" id="rr-p2a"></div><div class="name" id="rr-p2n">—</div><div class="scoreMini" id="rr-p2s"></div></div>
         <div class="step s1"><div class="badge b1">1</div><div class="av" id="rr-p1a"></div><div class="name" id="rr-p1n">—</div><div class="scoreMini" id="rr-p1s"></div></div>
         <div class="step s3"><div class="badge b3">3</div><div class="av" id="rr-p3a"></div><div class="name" id="rr-p3n">—</div><div class="scoreMini" id="rr-p3s"></div></div>
       </div>
     </div>
+
     <div class="list" id="rr-list"></div>
+
     <div class="search"><input id="rr-q" class="input" placeholder="Search username (top 100)…"/><button id="rr-find" class="go" type="button">Find</button></div>
     <div id="rr-mine" class="result"></div>
   </div>`;
 
   if(!ALL.length){
-    fetchGViz().then(normalize).then(items=>{ ALL=items; buildWeeks(); fillWeekUI(); })
-    .catch(err=>{
-      console.warn('Sheets failed, demo used:', err.message);
-      let demo=[]; function seed(week,arr){ arr.forEach(x=>{ x.week=week; demo.push(x); }); }
-      seed('Week 1',[{username:'evelin0510',points:1000000},{username:'송도르',points:502000},{username:'Gumiya',points:391200},{username:'Deathaura',points:282700},{username:'Player1063389294',points:200000},{username:'薇樂莉Jo',points:140000},{username:'talia bentley',points:130200},{username:'U8',points:120000},{username:'U9',points:118000},{username:'U10',points:110000},{username:'U11',points:108000},{username:'U12',points:104000},{username:'U13',points:101000},{username:'U14',points:98000},{username:'U15',points:96000},{username:'U16',points:92000},{username:'U17',points:90000},{username:'U18',points:88000},{username:'U19',points:86000},{username:'U20',points:84000}]);
-      seed('Week 2', demo.slice(0,20).map(x=>({username:x.username,points:Math.round(x.points*0.92)})));
-      seed('Week 3', demo.slice(0,20).map(x=>({username:x.username,points:Math.round(x.points*1.05)})));
-      ALL=demo; buildWeeks(); fillWeekUI();
-    });
+    fetchGViz().then(normalize).then(items=>{ ALL=items; }).catch(err=>{
+      console.warn('Sheets failed, using demo:', err.message);
+      // ===== Demo data with dates inside each week (1..7) =====
+      let demoWeek = (W, start) => {
+        const base = new Date(start); // yyyy-mm-dd
+        const players = [
+          'evelin0510','송도르','Gumiya','Deathaura','Player1063389294','薇樂莉Jo','talia bentley','U8','U9','U10','U11','U12','U13','U14','U15','U16','U17','U18','U19','U20'
+        ];
+        let arr=[];
+        for(let d=0; d<7; d++){
+          const day = new Date(base); day.setDate(base.getDate()+d);
+          const ds = day.toISOString().slice(0,10);
+          players.forEach((name,i)=> arr.push({week:`Week ${W}`, date:ds, username:name, points: Math.max(1000, (20-i)*1000 + Math.floor(Math.random()*8000)), avatar:''}));
+        }
+        return arr;
+      };
+      ALL = [].concat(demoWeek(1,'2025-01-01'), demoWeek(2,'2025-01-08'), demoWeek(3,'2025-01-15'));
+    }).finally(()=>{ buildWeeks(); fillWeekUI(); });
   } else { buildWeeks(); fillWeekUI(); }
 
-  function buildWeeks(){ let set={}, list=[]; ALL.forEach(x=>{ if(x.week) set[x.week]=true; }); for(const k in set) list.push(k); list.sort((a,b)=>{ const na=(a.match(/\d+/)||[])[0], nb=(b.match(/\d+/)||[])[0]; if(na&&nb) return na-nb; return a.localeCompare(b); }); WEEKS=list; CUR_WEEK=(WEEKS[WEEKS.length-1]||''); }
-  function fillWeekUI(){
-    const sel = $('#weekSel'); sel.innerHTML=''; WEEKS.forEach(w=>{ const o=document.createElement('option'); o.value=w; o.textContent=w; sel.appendChild(o); });
-    sel.value=CUR_WEEK; renderWeek();
-    $('#rr-find').onclick = findUser; $('#rr-q').addEventListener('keydown',e=>{ if(e.key==='Enter') findUser(); });
-    $('#weekSel').onchange = function(){ CUR_WEEK=this.value; renderWeek(); };
-    $('#prevBtn').onclick = function(){ const i=WEEKS.indexOf(CUR_WEEK); if(i>0){ CUR_WEEK=WEEKS[i-1]; sel.value=CUR_WEEK; renderWeek(); } };
-    $('#nextBtn').onclick = function(){ const i=WEEKS.indexOf(CUR_WEEK); if(i<WEEKS.length-1){ CUR_WEEK=WEEKS[i+1]; sel.value=CUR_WEEK; renderWeek(); } };
+  function buildWeeks(){
+    const weeks = unique(ALL.map(x=>x.week).filter(Boolean)).sort((a,b)=>{
+      const na=(a.match(/\d+/)||[])[0], nb=(b.match(/\d+/)||[])[0];
+      if(na&&nb) return na-nb; return a.localeCompare(b);
+    });
+    WEEKS = weeks;
+    CUR_WEEK = WEEKS[WEEKS.length-1]||'';
   }
-  function byWeek(week){ const arr = ALL.filter(x=>x.week===week).sort((a,b)=>b.points-a.points); arr.forEach((x,i)=>{ if(x.rank==null) x.rank=i+1; }); return arr; }
+
+  function fillDayUI(){
+    const daySel = $('#daySel'); daySel.innerHTML='';
+    const days = unique(ALL.filter(x=>x.week===CUR_WEEK).map(x=>x.date||'').filter(Boolean)).sort();
+    const optAll = document.createElement('option'); optAll.value=''; optAll.textContent='All week'; daySel.appendChild(optAll);
+    days.forEach(d=>{ const o=document.createElement('option'); o.value=d; o.textContent=d; daySel.appendChild(o); });
+    daySel.value='';
+  }
+
+  function fillWeekUI(){
+    const sel = $('#weekSel'); sel.innerHTML='';
+    WEEKS.forEach(w=>{ const o=document.createElement('option'); o.value=w; o.textContent=w; sel.appendChild(o); });
+    sel.value=CUR_WEEK;
+    fillDayUI(); renderWeek();
+
+    $('#rr-find').onclick = findUser;
+    $('#rr-q').addEventListener('keydown',e=>{ if(e.key==='Enter') findUser(); });
+    $('#weekSel').onchange = function(){ CUR_WEEK=this.value; fillDayUI(); renderWeek(); };
+    $('#daySel').onchange = function(){ renderWeek(); };
+    $('#prevBtn').onclick = function(){
+      const daySel = $('#daySel');
+      if(daySel.value){ // step day back
+        const opts=[...daySel.options].map(o=>o.value).filter(Boolean); const i=opts.indexOf(daySel.value);
+        if(i>0){ daySel.value=opts[i-1]; renderWeek(); return; } else { daySel.value=''; renderWeek(); return; }
+      }
+      const i=WEEKS.indexOf(CUR_WEEK); if(i>0){ CUR_WEEK=WEEKS[i-1]; sel.value=CUR_WEEK; fillDayUI(); renderWeek(); }
+    };
+    $('#nextBtn').onclick = function(){
+      const daySel = $('#daySel');
+      if(daySel.value){
+        const opts=[...daySel.options].map(o=>o.value).filter(Boolean); const i=opts.indexOf(daySel.value);
+        if(i>-1 && i<opts.length-1){ daySel.value=opts[i+1]; renderWeek(); return; } else { daySel.value=''; renderWeek(); return; }
+      }
+      const i=WEEKS.indexOf(CUR_WEEK); if(i<WEEKS.length-1){ CUR_WEEK=WEEKS[i+1]; sel.value=CUR_WEEK; fillDayUI(); renderWeek(); }
+    };
+  }
+
+  function filterWeekDay(week, day){
+    let arr = ALL.filter(x=>x.week===week);
+    if(day) arr = arr.filter(x=> (x.date||'') === day);
+    arr = arr.sort((a,b)=>b.points-a.points);
+    arr.forEach((x,i)=>{ x.rank=i+1; });
+    return arr;
+  }
+
   function renderWeek(){
-    const items = byWeek(CUR_WEEK);
-    function setPod(id,row){ $('#rr-p'+id+'a').style.backgroundImage = faceBg(row?row.avatar:''); $('#rr-p'+id+'n').textContent = row?row.username:'—'; $('#rr-p'+id+'s').textContent = row? (fmt(row.points)+' pts') : ''; }
+    const day = $('#daySel')?.value || '';
+    const items = filterWeekDay(CUR_WEEK, day);
+
+    function setPod(id,row){
+      $('#rr-p'+id+'a').style.backgroundImage = faceBg(row?row.avatar:'');
+      $('#rr-p'+id+'n').textContent = row?row.username:'—';
+      $('#rr-p'+id+'s').textContent = row? (fmt(row.points)+' pts') : '';
+    }
     setPod(1,items[0]||null); setPod(2,items[1]||null); setPod(3,items[2]||null);
+
     const list = $('#rr-list'); list.innerHTML='';
-    items.slice(3,15).forEach(r=>{ const row=document.createElement('div'); row.className='row';
-      row.innerHTML = '<div class="rk">'+r.rank+'</div><div class="left"><div class="face" style="background-image:'+faceBg(r.avatar)+'"></div><div class="uname">'+esc(r.username)+'</div></div><div class="val">'+fmt(r.points)+'</div>'; list.appendChild(row); });
+    items.slice(3,15).forEach(r=>{
+      const row=document.createElement('div'); row.className='row';
+      row.innerHTML = '<div class="rk">'+r.rank+'</div>'+
+        '<div class="left"><div class="face" style="background-image:'+faceBg(r.avatar)+'"></div>'+
+        '<div class="uname">'+esc(r.username)+'</div></div>'+
+        '<div class="val">'+fmt(r.points)+'</div>';
+      list.appendChild(row);
+    });
     TOP100 = items.slice(0,100);
   }
-  function findUser(){ const q = ($('#rr-q').value||'').trim().toLowerCase(); const res = $('#rr-mine'); if(!q){ res.style.display='block'; res.textContent='Enter a username'; return; } const hit = TOP100.find(x=>x.username.toLowerCase()===q); if(!hit){ res.style.display='block'; res.textContent='No match in Top 100.'; return; } res.style.display='block'; res.innerHTML = '<b>'+esc(hit.username)+'</b> — Rank <b>'+hit.rank+'</b> • '+fmt(hit.points)+' pts • '+esc(hit.week); }
+
+  function findUser(){
+    const q = ($('#rr-q').value||'').trim().toLowerCase();
+    const res = $('#rr-mine');
+    if(!q){ res.style.display='block'; res.textContent='Enter a username'; return; }
+    const hit = TOP100.find(x=>x.username.toLowerCase()===q);
+    if(!hit){ res.style.display='block'; res.textContent='No match in Top 100 for current selection.'; return; }
+    res.style.display='block';
+    const day = $('#daySel').value; const scope = day? day : (CUR_WEEK||'this week');
+    res.innerHTML = '<b>'+esc(hit.username)+'</b> — Rank <b>'+hit.rank+'</b> • '+fmt(hit.points)+' pts • '+esc(scope);
+  }
 }
 
-/* ======= Community & Terms (short) ======= */
+/* ======= TERMS / COMMUNITY ======= */
 function renderTerms(){
   $('#view').innerHTML = `
   <div class="card"><h2>Terms & Conditions</h2><p>By joining the Referral Race, you agree to the rules below.</p></div>
@@ -308,7 +404,7 @@ function renderCommunity(){
   const rows = socials.map(s=>`<div class="socialItem"><div class="sLeft"><div class="sIcon">${iconSVG(s.icon)}</div><div class="sName">${s.name}</div></div><a class="subBtn" href="${s.url}" target="_blank" rel="noopener">Subscribe</a></div>`).join('');
   $('#view').innerHTML = `<div class="card"><h2>Share & Follow</h2><p>Invite friends and follow us.</p></div><div class="socialCard">${rows}</div>`; }
 
-/* ======= Scores → Google Apps Script ======= */
+/* ======= SCORE REPORT (to Google Apps Script) ======= */
 async function reportScore({game, points, week=""}){
   const userId   = localStorage.getItem('player_provider_id') || "";
   const userName = localStorage.getItem('player_name') || "";
@@ -322,32 +418,15 @@ async function reportScore({game, points, week=""}){
   }catch(e){ console.warn('Network error saving score'); }
 }
 
-/* ======= Mini Games (with gate & scoring) ======= */
+/* ======= MINI GAMES (login gate only on tab click) ======= */
 function renderMiniGame(){
-  if(!isLinked()){
-    $('#view').innerHTML = `
-      <div class="card">
-        <h3>Login / Link Account</h3>
-        <p class="tip">Log in with <b>Telegram</b> to access the Mini Game.</p>
-        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><div id="tg-login"></div><div style="font-size:12px;color:#b7c3ff">Status: <b>Not linked</b></div></div>
-      </div>`;
-    // inline login button
-    const mount = $('#tg-login');
-    if(mount){
-      const s = document.createElement('script');
-      s.src = "https://telegram.org/js/telegram-widget.js?22"; s.async = true;
-      s.setAttribute('data-telegram-login', TG_BOT_USERNAME);
-      s.setAttribute('data-size','large'); s.setAttribute('data-userpic','false');
-      s.setAttribute('data-onauth','onTelegramAuth'); s.setAttribute('data-request-access','write');
-      mount.appendChild(s);
-    }
-    openGate();
-    return;
-  }
-
-  const who = localStorage.getItem('player_name') || 'Linked';
+  const linked = isLinked();
+  const who = localStorage.getItem('player_name') || (linked ? 'Linked' : 'Not linked');
   $('#view').innerHTML = `
-    <div class="card"><h2>Mini Game</h2><p class="tip">Linked as <b>${esc(who)}</b>. Scores will be sent to Google Sheets.</p></div>
+    <div class="card"><h2>Mini Game</h2>
+      <p class="tip">${linked ? 'Linked as <b>'+esc(who)+'</b>. Scores will be sent to Google Sheets.' : 'You must link your Telegram to play. Click the Mini Game tab again to open the login.'}</p>
+    </div>
+    ${linked ? `
     <div class="card">
       <div class="mg-tabs">
         <button class="mg-t active" data-game="flappy">Flappy Spin</button>
@@ -362,17 +441,19 @@ function renderMiniGame(){
         <canvas id="mgCanvas" class="mg-canvas" width="480" height="340"></canvas>
       </div>
       <div class="tip" id="mgTip">Tap / Space to flap. Don’t hit the chips!</div>
-    </div>`;
+    </div>` : ``}
+  `;
 
-  // Canvas
+  if(!linked) return; // gate is handled on tab click only
+
+  // ===== Playables =====
   const canvas = $('#mgCanvas'), ctx = canvas.getContext('2d');
   const title = $('#mgTitle'), tip = $('#mgTip');
-  let game='flappy', RAF=null, running=false;
+  let game='flappy', RAF=null, cleanup=null;
 
   function setCanvasSize(){ const w = canvas.clientWidth; canvas.width = Math.round(w); canvas.height = 340; }
   setCanvasSize(); addEventListener('resize', setCanvasSize);
 
-  // Switch tabs
   $all('.mg-t').forEach(b=>b.onclick=()=>{ $all('.mg-t').forEach(x=>x.classList.remove('active')); b.classList.add('active'); game=b.dataset.game; stopGame();
     if(game==='flappy'){ title.textContent='Flappy Spin'; tip.textContent='Tap / Space to flap. Don’t hit the chips!'; }
     if(game==='plinko'){ title.textContent='Lucky Drop'; tip.textContent='Tap / Click to drop a ball. Watch it bounce!'; }
@@ -382,134 +463,112 @@ function renderMiniGame(){
   $('#mgStart').onclick=()=> startGame();
   $('#mgStop').onclick =()=> stopGame();
 
-  function startGame(){ if(!isLinked()){ openGate(); return; } stopGame(); running=true; if(game==='flappy') cleanup=runFlappy(); else if(game==='plinko') cleanup=runPlinko(); else cleanup=runJump(); }
-  function stopGame(){ running=false; if(RAF) cancelAnimationFrame(RAF); if(cleanup){ try{cleanup();}catch(e){} cleanup=null; } ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#0a0f22'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; ctx.font='bold 16px Inter'; ctx.textAlign='center'; ctx.fillText('Press Start', canvas.width/2, canvas.height/2); }
+  function startGame(){ stopGame(); if(game==='flappy') cleanup=runFlappy(); else if(game==='plinko') cleanup=runPlinko(); else cleanup=runJump(); }
+  function stopGame(){ if(RAF) cancelAnimationFrame(RAF); if(cleanup){ try{cleanup();}catch(e){} cleanup=null; } ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#0a0f22'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; ctx.font='bold 16px Inter'; ctx.textAlign='center'; ctx.fillText('Press Start', canvas.width/2, canvas.height/2); }
 
-  /* === Game 1: Flappy (score: pipes passed) === */
+  /* === Flappy (score: pipes passed) === */
   function runFlappy(){
     const w=canvas.width, h=canvas.height;
     let bird={x:w*0.28,y:h*0.45,r:12,vy:0};
     let pipes=[], gap=110, t=0, gravity=0.45, jump=-6.5, alive=true, score=0;
-
     function spawn(){ const top=40+Math.random()*(h-gap-80); pipes.push({x:w+20, top:top, bot:top+gap, w:38, scored:false}); }
     function flap(){ if(!alive) return; bird.vy=jump; }
-    canvas.onclick=flap; window.onkeydown=(e)=>{ if(e.code==='Space') flap(); };
-
-    function drawChip(x,y,r){ ctx.save(); ctx.translate(x,y); ctx.rotate(((t+x)*0.01)%Math.PI*2); ctx.fillStyle='#ffd86a'; ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#5a3b00'; ctx.font='bold 12px Inter, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('¢',0,0); ctx.restore(); }
-
+    canvas.onclick=flap; const keyH=(e)=>{ if(e.code==='Space') flap(); }; window.addEventListener('keydown',keyH);
+    function chip(x,y,r){ ctx.save(); ctx.translate(x,y); ctx.rotate(((t+x)*0.01)%Math.PI*2); ctx.fillStyle='#ffd86a'; ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#5a3b00'; ctx.font='bold 12px Inter, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('¢',0,0); ctx.restore(); }
     function loop(){
-      RAF=requestAnimationFrame(loop); t++;
-      ctx.clearRect(0,0,w,h); ctx.fillStyle='#081025'; ctx.fillRect(0,0,w,h);
+      RAF=requestAnimationFrame(loop); t++; ctx.clearRect(0,0,w,h); ctx.fillStyle='#081025'; ctx.fillRect(0,0,w,h);
       if(t%90===0) spawn();
-
       for(let i=pipes.length-1;i>=0;i--){
         const p=pipes[i]; p.x-=2.2;
         ctx.fillStyle='#1b2b66'; ctx.fillRect(p.x,0,p.w,p.top); ctx.fillRect(p.x,p.bot,p.w,h-p.bot);
-        drawChip(p.x+p.w/2,p.top-18,10); drawChip(p.x+p.w/2,p.bot+18,10);
+        chip(p.x+p.w/2,p.top-18,10); chip(p.x+p.w/2,p.bot+18,10);
         if(!p.scored && p.x + p.w < bird.x){ p.scored=true; score++; }
         if(p.x+p.w<0) pipes.splice(i,1);
         if(bird.x>p.x-bird.r && bird.x<p.x+p.w+bird.r){ if(bird.y-bird.r<p.top || bird.y+bird.r>p.bot) alive=false; }
       }
-
       bird.vy+=gravity; bird.y+=bird.vy;
       ctx.fillStyle='#7fe3ff'; ctx.beginPath(); ctx.arc(bird.x,bird.y,bird.r,0,Math.PI*2); ctx.fill();
       ctx.fillStyle='#ffd86a'; ctx.fillRect(bird.x-10,bird.y-bird.r-10,20,6);
       ctx.fillStyle='#fff'; ctx.font='bold 16px Inter'; ctx.fillText('Score: '+score, 12, 24);
-
       if(bird.y>h-10 || bird.y<10) alive=false;
-      if(!alive){
-        ctx.fillStyle='rgba(0,0,0,.45)'; ctx.fillRect(0,0,w,h);
-        ctx.fillStyle='#fff'; ctx.font='bold 20px Inter'; ctx.textAlign='center'; ctx.fillText('Game Over • '+score+' pts', w/2,h/2);
-        reportScore({game:'flappy', points: score, week: CUR_WEEK||''});
-        cancelAnimationFrame(RAF);
-      }
-    }
-    loop();
-    return ()=>{ canvas.onclick=null; window.onkeydown=null; };
+      if(!alive){ ctx.fillStyle='rgba(0,0,0,.45)'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#fff'; ctx.font='bold 20px Inter'; ctx.textAlign='center'; ctx.fillText('Game Over • '+score+' pts', w/2,h/2);
+        reportScore({game:'flappy', points: score, week: CUR_WEEK||''}); cancelAnimationFrame(RAF); }
+    } loop();
+    return ()=>{ canvas.onclick=null; window.removeEventListener('keydown',keyH); };
   }
 
-  /* === Game 2: Plinko (score: slot value when ball settles) === */
+  /* === Plinko (score: slot value) === */
   function runPlinko(){
     const w=canvas.width, h=canvas.height;
     const pins=[], cols=9, rows=7, spacing=w/(cols+1), offsetY=70;
     for(let r=0;r<rows;r++){ for(let c=0;c<cols;c++){ const x=spacing*(c+1)+(r%2?spacing/2:0), y=offsetY+r*38; if(x>20&&x<w-20) pins.push({x,y}); }}
-    const slotVals=[5,10,20,50,20,10,5,15,25]; // 9 slots
+    const slotVals=[5,10,20,50,20,10,5,15,25];
     let ball=null, lastAward=0;
-
     function drop(x){ if(ball) return; ball={x:x||w/2,y:30,vx:0,vy:0,r:8}; lastAward=0; }
     canvas.onclick=(e)=>{ const rect=canvas.getBoundingClientRect(); drop(e.clientX-rect.left); };
-
-    function drawSlots(){
-      for(let s=0;s<cols;s++){
-        const sx=spacing*(s+1); ctx.fillStyle='#11245a'; ctx.fillRect(sx-2,h-60,4,60);
-        ctx.fillStyle='#bcd2ff'; ctx.font='bold 12px Inter'; ctx.textAlign='center'; ctx.fillText(slotVals[s], sx, h-66);
-      }
-    }
-
+    function drawSlots(){ for(let s=0;s<cols;s++){ const sx=spacing*(s+1); ctx.fillStyle='#11245a'; ctx.fillRect(sx-2,h-60,4,60); ctx.fillStyle='#bcd2ff'; ctx.font='bold 12px Inter'; ctx.textAlign='center'; ctx.fillText(slotVals[s], sx, h-66); } }
     function loop(){
       RAF=requestAnimationFrame(loop); ctx.clearRect(0,0,w,h); ctx.fillStyle='#060b1a'; ctx.fillRect(0,0,w,h); drawSlots();
       ctx.fillStyle='#8aa3ff'; pins.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2); ctx.fill(); });
-
       if(ball){
         ball.vy+=0.35; ball.x+=ball.vx; ball.y+=ball.vy;
-        if(ball.x<ball.r){ ball.x=ball.r; ball.vx*=-0.6; }
-        if(ball.x>w-ball.r){ ball.x=w-ball.r; ball.vx*=-0.6; }
+        if(ball.x<ball.r){ ball.x=ball.r; ball.vx*=-0.6; } if(ball.x>w-ball.r){ ball.x=w-ball.r; ball.vx*=-0.6; }
         pins.forEach(p=>{ const dx=ball.x-p.x, dy=ball.y-p.y, d=Math.hypot(dx,dy);
           if(d<ball.r+5){ const ang=Math.atan2(dy,dx), speed=Math.hypot(ball.vx,ball.vy)*0.9+1, dir=(Math.random()<0.5?-1:1)*0.9;
             ball.vx=Math.cos(ang)*speed*dir; ball.vy=Math.sin(ang)*speed; const overlap=ball.r+5-d; ball.x+=Math.cos(ang)*overlap; ball.y+=Math.sin(ang)*overlap; }});
         if(ball.y>h-12){ ball.vy*=-0.35; ball.y=h-12; ball.vx*=0.95; if(Math.abs(ball.vy)<0.5){
-          // landed: determine slot
           let idx=Math.max(0,Math.min(cols-1, Math.round(ball.x/spacing)-1)); lastAward=slotVals[idx]||0;
           ctx.fillStyle='#fff'; ctx.font='bold 18px Inter'; ctx.textAlign='center'; ctx.fillText('+'+lastAward+' pts', w/2, h/2);
-          reportScore({game:'plinko', points:lastAward, week: CUR_WEEK||''});
-          ball=null;
-        }}
+          reportScore({game:'plinko', points:lastAward, week: CUR_WEEK||''}); ball=null; } }
         ctx.fillStyle='#ffd86a'; ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fill();
       } else { const x=(Date.now()/8)%w; ctx.fillStyle='#fff8'; ctx.fillRect(x,30,2,20); if(lastAward){ ctx.fillStyle='#fff'; ctx.font='bold 16px Inter'; ctx.textAlign='center'; ctx.fillText('Last: +'+lastAward, w/2, 28); } }
-    }
-    loop();
+    } loop();
     return ()=>{ canvas.onclick=null; };
   }
 
-  /* === Game 3: Jump (score: platform bounces) === */
+  /* === Jump (score: platform bounces) === */
   function runJump(){
     const w=canvas.width, h=canvas.height;
     let player={x:w/2,y:h-40,vx:0,vy:-8,r:12}, plats=[], count=12, ax=0, score=0;
     for(let i=0;i<count;i++) plats.push({x:Math.random()*(w-80)+40, y:i*(h/count)});
     function onKey(e,d){ if(e.code==='ArrowLeft') ax=d?-0.4:0; if(e.code==='ArrowRight') ax=d?0.4:0; }
-    const kd = e=>onKey(e,true), ku=e=>onKey(e,false);
+    const kd=e=>onKey(e,true), ku=e=>onKey(e,false);
     window.addEventListener('keydown',kd); window.addEventListener('keyup',ku);
     if(window.DeviceMotionEvent) window.addEventListener('deviceorientation',e=>{ if(e.gamma!=null) ax=Math.max(-0.5,Math.min(0.5,e.gamma/50)); });
-
     function loop(){
       RAF=requestAnimationFrame(loop); ctx.clearRect(0,0,w,h); ctx.fillStyle='#050a18'; ctx.fillRect(0,0,w,h);
       player.vx+=ax; player.vx*=0.98; player.x+=player.vx; player.vy+=0.25; player.y+=player.vy;
       if(player.x<player.r){player.x=player.r; player.vx*=-0.6;} if(player.x>w-player.r){player.x=w-player.r; player.vx*=-0.6;}
       if(player.y < h*0.4){ const dy=(h*0.4 - player.y); player.y+=dy; plats.forEach(p=>p.y+=dy); }
       plats.forEach(p=>{ ctx.fillStyle='#273a8c'; ctx.fillRect(p.x-30,p.y,60,8);
-        if(player.vy>0 && player.y+player.r<p.y+8 && player.y+player.r>p.y && Math.abs(player.x-p.x)<34){ player.vy=-7.8; score++; } // +1 per bounce
+        if(player.vy>0 && player.y+player.r<p.y+8 && player.y+player.r>p.y && Math.abs(player.x-p.x)<34){ player.vy=-7.8; score++; }
         if(p.y>h+20){ p.y=-20; p.x=Math.random()*(w-80)+40; } });
       ctx.fillStyle='#7fe3ff'; ctx.beginPath(); ctx.arc(player.x,player.y,player.r,0,Math.PI*2); ctx.fill();
       ctx.fillStyle='#ffd86a'; ctx.fillRect(player.x-10,player.y-player.r-10,20,6);
       ctx.fillStyle='#fff'; ctx.font='bold 16px Inter'; ctx.fillText('Score: '+score, 12, 24);
       if(player.y>h+80){ ctx.fillStyle='rgba(0,0,0,.45)'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#fff'; ctx.font='bold 20px Inter'; ctx.textAlign='center'; ctx.fillText('You fell! • '+score+' pts', w/2,h/2);
         reportScore({game:'jump', points: score, week: CUR_WEEK||''}); cancelAnimationFrame(RAF); }
-    }
-    loop();
+    } loop();
     return ()=>{ window.removeEventListener('keydown',kd); window.removeEventListener('keyup',ku); };
   }
 
-  let cleanup=null;
-  stopGame();
+  stopGame(); // paint "Press Start"
 }
 
-/* ======= Bottom Nav ======= */
-$all('.iconnav .itab').forEach(btn=>{ btn.addEventListener('click', ()=>{ state.tab = btn.getAttribute('data-tab'); if(state.tab==='minigame' && !isLinked()) openGate(); render(); }); });
+/* ======= BOTTOM NAV (open login popup ONLY when Mini Game tab clicked) ======= */
+$all('.iconnav .itab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const tab = btn.getAttribute('data-tab');
+    state.tab = tab;
+    if(tab==='minigame' && !isLinked()){ openGate(); }
+    render();
+  });
+});
 
-/* ======= Boot ======= */
+/* ======= BOOT ======= */
 render(); moveInk(0);
 
-/* ======= Telegram auth callback ======= */
+/* ======= TELEGRAM AUTH CALLBACK ======= */
 async function onTelegramAuth(user){
   try{
     const rico = prompt("Enter your in-app username (optional, can set later):", "") || "";
@@ -524,13 +583,13 @@ async function onTelegramAuth(user){
   }catch(e){ alert("Network error linking Telegram"); }
 }
 
-/* ======= Background music (optional) ======= */
+/* ======= BACKGROUND MUSIC (optional) ======= */
 (function(){
   const audio=$('#bgm'), btn=$('#soundBtn'); if(!audio||!btn) return;
   const saved=localStorage.getItem('bgm_pref'); if(saved==='off'){ audio.muted=true; } if(saved==='on'){ audio.muted=false; }
   document.addEventListener('DOMContentLoaded', tryPlay, {once:true});
-  async function tryPlay(){ try{ if(localStorage.getItem('bgm_pref')==='off'){ btn.classList.add('show'); return; } audio.muted=false; await audio.play(); btn.classList.remove('show'); localStorage.setItem('bgm_pref','on'); }catch(e){ btn.classList.add('show'); bindGlobalUnlock(); } }
-  function bindGlobalUnlock(){ const unlock=async()=>{ try{ audio.muted=false; await audio.play(); btn.classList.remove('show'); btn.classList.add('active'); localStorage.setItem('bgm_pref','on'); remove(); }catch(e){} }; const remove=()=>{ document.removeEventListener('pointerdown',unlock); document.removeEventListener('keydown',unlock); document.removeEventListener('touchstart',unlock,{passive:true}); }; document.addEventListener('pointerdown',unlock); document.addEventListener('keydown',unlock); document.addEventListener('touchstart',unlock,{passive:true}); }
+  async function tryPlay(){ try{ if(localStorage.getItem('bgm_pref')==='off'){ btn.classList.add('show'); return; } audio.muted=false; await audio.play(); btn.classList.remove('show'); localStorage.setItem('bgm_pref','on'); }catch(e){ btn.classList.add('show'); bind(); } }
+  function bind(){ const u=async()=>{ try{ audio.muted=false; await audio.play(); btn.classList.remove('show'); btn.classList.add('active'); localStorage.setItem('bgm_pref','on'); off(); }catch(e){} }; const off=()=>{ document.removeEventListener('pointerdown',u); document.removeEventListener('keydown',u); document.removeEventListener('touchstart',u,{passive:true}); }; document.addEventListener('pointerdown',u); document.addEventListener('keydown',u); document.addEventListener('touchstart',u,{passive:true}); }
   btn.addEventListener('click', async ()=>{ try{ if(audio.paused){ audio.muted=false; await audio.play(); } else { audio.muted=!audio.muted; if(audio.muted) await audio.pause(); else await audio.play(); } const on=!audio.paused && !audio.muted; btn.classList.toggle('active',on); if(on) btn.classList.remove('show'); localStorage.setItem('bgm_pref', on?'on':'off'); }catch(e){} });
 })();
 </script>
