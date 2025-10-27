@@ -87,13 +87,14 @@
   /* MODAL */
   .hidden{display:none}
   .modalBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;z-index:2000}
-  .modalCard{width:min(460px,92vw);border-radius:16px;padding:16px;background:linear-gradient(180deg,#151533,#10112a);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 38px rgba(0,0,0,.35)}
+  .modalCard{width:min(460px,92vw);border-radius:16px;padding:16px;background:linear-gradient(180deg,#151533,#10112a);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 38px rgba(0,0,0,.35);position:relative}
   .modalCard h3{margin:0 0 10px}
   .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:900;cursor:pointer}
   .btnPrimary{background:#ffd86a;color:#361e00;box-shadow:0 4px 0 rgba(0,0,0,.12)}
   .inp{width:100%;border-radius:10px;border:1px solid var(--edge);background:#0f1030;color:#eff3ff;padding:10px 12px}
   .dim{font-size:12px;color:#aeb9ff}
+  .closeX{position:absolute;right:10px;top:10px;background:transparent;border:0;color:#cfd8ff;font-weight:900;font-size:16px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -133,14 +134,16 @@
     <svg viewBox="0 0 24 24" class="ic"><path d="M4 10h4l5-4v12l-5-4H4zM17 8a5 5 0 010 8"/></svg><span>Sound</span>
   </button>
 
-  <!-- Login Gate (appears ONLY after clicking Mini Game if not linked) -->
+  <!-- Login Gate (ONLY after clicking Mini Game if not linked) -->
   <div id="gate" class="modalBackdrop hidden" role="dialog" aria-modal="true">
     <div class="modalCard">
+      <button id="gateClose" class="closeX" aria-label="Close">✕</button>
       <h3>Login required</h3>
       <p class="dim">1) Login with Telegram → 2) Tap “Start the Bot” → 3) Enter ricobet_username → 4) Play</p>
       <div class="row" style="margin-top:8px"><div id="tg-login-gate"></div></div>
       <div class="row" style="margin-top:8px">
-        <a id="startBot" class="btn btnPrimary" href="https://t.me/ricobet_minigamebot?start=68ff26d878de1447500d9d5c" target="_blank" rel="noopener" aria-disabled="true" style="pointer-events:none;opacity:.6">Start the Bot</a>
+        <!-- ALWAYS CLICKABLE NOW -->
+        <a id="startBot" class="btn btnPrimary" href="https://t.me/ricobet_minigamebot?start=play" target="_blank" rel="noopener">Start the Bot</a>
       </div>
       <div id="userRow" class="row hidden" style="margin-top:8px">
         <input id="ricoInput" class="inp" placeholder="ricobet_username"/>
@@ -185,12 +188,10 @@
     s.setAttribute('data-onauth','onTelegramAuth'); s.setAttribute('data-request-access','write');
     mount.appendChild(s);
     $('#userRow').classList.add('hidden');
-    $('#startBot').style.pointerEvents='none'; $('#startBot').style.opacity='.6'; $('#startBot').setAttribute('aria-disabled','true');
   }
   async function onTelegramAuth(user){
     TG_TEMP_USER=user;
     $('#userRow').classList.remove('hidden');
-    $('#startBot').style.pointerEvents='auto'; $('#startBot').style.opacity='1'; $('#startBot').removeAttribute('aria-disabled');
   }
   window.onTelegramAuth=onTelegramAuth;
 
@@ -431,13 +432,15 @@
   $all('.iconnav .itab').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const tab=btn.getAttribute('data-tab'); state.tab=tab;
-      if(tab==='minigame' && !isLinked()){ openGate(); }
+      // Ensure modal is ONLY shown for Mini Game; hide otherwise
+      if(tab==='minigame' && !isLinked()){ openGate(); } else { $('#gate').classList.add('hidden'); }
       render();
     });
   });
 
-  /* Gate buttons */
+  // Modal close button
   document.addEventListener('click',e=>{
+    if(e.target && e.target.id==='gateClose'){ $('#gate').classList.add('hidden'); }
     if(e.target && e.target.id==='btnBind'){
       const v=($('#ricoInput').value||'').trim();
       if(!v){alert('Please enter ricobet_username');return}
@@ -449,7 +452,7 @@
   /* Boot */
   render(); moveInk(0);
 
-  /* (Optional) Music autostart helper */
+  /* (Optional) Music helper */
   (function(){
     const audio=$('#bgm'), btn=$('#soundBtn'); if(!audio||!btn) return;
     const saved=localStorage.getItem('bgm_pref'); if(saved==='off'){audio.muted=true} if(saved==='on'){audio.muted=false}
