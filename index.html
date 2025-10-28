@@ -53,7 +53,7 @@
   .rr .go:active{transform:translateY(1px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
   .rr .result{margin-top:8px;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.08);color:#2b2350;border-radius:12px;padding:10px 12px;font-weight:700;display:none}
 
-  /* NAV (4 tabs) */
+  /* NAV — 4 tabs now */
   .iconnav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));width:min(520px,100% - 12px);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px;background:rgba(16,17,42,.98);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:16px;z-index:1000;--hot:#ff4fd8;--hot2:#ff9ae8;--ix:0}
   .iconnav .itab{appearance:none;border:0;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;color:#cdd7ff;font-weight:800;border-radius:14px}
   .iconnav .itab span{font-size:11px}
@@ -61,7 +61,7 @@
   .iconnav .itab.active .ico{transform:translateY(-2px) scale(1.06)} .iconnav .itab.active{color:#fff}
   .iconnav .inkbar{position:absolute;bottom:10px;height:44px;left:12px;right:12px;width:calc((100% - 24px - 8px*3)/4);border-radius:16px;background:radial-gradient(90% 140% at 10% 0%,var(--hot) 0%,var(--hot2) 60%,#ffcabf 100%);box-shadow:0 12px 26px rgba(255,79,216,.35), inset 0 -2px 6px rgba(0,0,0,.18);transform:translateX(calc(var(--ix) * (100% + 8px)));transition:transform .28s cubic-bezier(.22,.9,.24,1)}
 
-  /* SHARE BAR */
+  /* SHARE ROW (community top) */
   .shareRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .sx{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--edge);background:#14153a;border-radius:12px;padding:10px 12px;font-weight:900}
   .sx svg{width:18px;height:18px}
@@ -77,7 +77,7 @@
   .mg-canvas{display:block;width:100%;height:340px;background:linear-gradient(180deg,#0a0e24,#060814)}
   .tip{font-size:12px;color:#b7c3ff;margin-top:8px}
 
-  /* MODAL — default hidden; only shows when body.gate-open is present */
+  /* MODAL — shown only when body.gate-open */
   .modalBackdrop{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.55);z-index:2000}
   .gate-open #gate{display:grid}
   .modalCard{width:min(460px,92vw);border-radius:16px;padding:16px;background:linear-gradient(180deg,#151533,#10112a);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 38px rgba(0,0,0,.35);position:relative}
@@ -122,7 +122,7 @@
     </button>
   </nav>
 
-  <!-- Login Gate (visible only when body.gate-open) -->
+  <!-- Login Gate -->
   <div id="gate" class="modalBackdrop" role="dialog" aria-modal="true">
     <div class="modalCard">
       <button id="gateClose" class="closeX" aria-label="Close">✕</button>
@@ -134,7 +134,7 @@
       </div>
       <p class="dim" id="gateHint" style="margin-top:8px">Waiting for return via PLAY NOW…</p>
       <div class="row" style="margin-top:8px">
-        <input id="pasteToken" class="inp" placeholder="Paste PLAY NOW link or token and Unlock"/>
+        <input id="pasteToken" class="inp" placeholder="Paste PLAY NOW link / token — OR type ricobet_username"/>
         <button id="useToken" class="btn btnPrimary">Unlock</button>
       </div>
     </div>
@@ -150,7 +150,7 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbxo_JlcM5rL9v7quZ_HViaS
 const RANK_SHEET_ID  = "1rJg4RYn0AkvsqhVGk5CwhZrYNz0gFC6_7ZPiDXigU-o";
 const RANK_SHEET_GID = "0";
 
-/* Rank avatars 1..20; >20 uses 20 */
+/* Rank avatars (1..20) */
 const RANK_AVATARS = [
  "https://ricomx.ft-crm.com/media-api/serve/30739191-4079-40cd-9154-f15c869c9f35_1.png",
  "https://ricomx.ft-crm.com/media-api/serve/7e97b3d5-f53f-4211-b7d3-0c012a8e05ff_2.png",
@@ -459,10 +459,7 @@ function renderMiniGame(){
 
     /* Jump game with coins */
     function runJump(){const w=canvas.width,h=canvas.height;let player={x:w/2,y:h-60,vx:0,vy:-8,r:12};let plats=[],coins=[],count=12,ax=0,score=0;
-      function addPlat(y){const x=Math.random()*(w-80)+40; plats.push({x,y}); if(Math.random()<0.8){ // 80% chance coin on this platform
-          coins.push({x:x, y:y-14, r:6, taken:false});
-        }
-      }
+      function addPlat(y){const x=Math.random()*(w-80)+40; plats.push({x,y}); if(Math.random()<0.8){coins.push({x:x, y:y-14, r:6, taken:false});}}
       for(let i=0;i<count;i++) addPlat(i*(h/count));
       function onKey(e,d){if(e.code==='ArrowLeft')ax=d?-0.4:0;if(e.code==='ArrowRight')ax=d?0.4:0} const kd=e=>onKey(e,true), ku=e=>onKey(e,false); window.addEventListener('keydown',kd);window.addEventListener('keyup',ku);
       if(window.DeviceMotionEvent)window.addEventListener('deviceorientation',e=>{if(e.gamma!=null)ax=Math.max(-0.5,Math.min(0.5,e.gamma/50))});
@@ -472,22 +469,17 @@ function renderMiniGame(){
         if(player.y<h*0.4){const dy=(h*0.4-player.y);player.y+=dy;plats.forEach(p=>p.y+=dy);coins.forEach(c=>c.y+=dy)}
         plats.forEach(p=>{ctx.fillStyle='#273a8c';ctx.fillRect(p.x-30,p.y,60,8);
           if(player.vy>0&&player.y+player.r<p.y+8&&player.y+player.r>p.y&&Math.abs(player.x-p.x)<34){player.vy=-7.8;}
-          if(p.y>h+20){p.y=-20;p.x=Math.random()*(w-80)+40; /* move coin with plat */ let c=coins.find(k=>Math.abs(k.x-p.x)<1 && Math.abs(k.y-(p.y-14))<1); }
+          if(p.y>h+20){p.y=-20;p.x=Math.random()*(w-80)+40;}
         })
-        // coins
         coins.forEach(c=>{
           if(c.taken) return;
           ctx.fillStyle='#ffd86a';ctx.beginPath();ctx.arc(c.x,c.y,c.r,0,Math.PI*2);ctx.fill();
-          // collect
           const dx=player.x-c.x, dy=player.y-c.y, d=Math.hypot(dx,dy);
-          if(d<player.r+c.r){ c.taken=true; score++; toast('+1 coin'); }
-          if(c.y>h+30){ // recycled coin when platform scrolled down
-            c.y=-30; c.x=Math.random()*(w-80)+40; c.taken=false;
-          }
+          if(d<player.r+c.r){ c.taken=true; score++; }
+          if(c.y>h+30){ c.y=-30; c.x=Math.random()*(w-80)+40; c.taken=false; }
         });
         ctx.fillStyle='#7fe3ff';ctx.beginPath();ctx.arc(player.x,player.y,player.r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffd86a';ctx.fillRect(player.x-10,player.y-player.r-10,20,6);
         ctx.fillStyle='#fff';ctx.font='bold 16px Inter';ctx.textAlign='start';ctx.fillText('Coins: '+score,12,24);
-        // recycle platforms that went off screen
         plats.forEach(p=>{ if(p.y>h+20){ p.y=-20; p.x=Math.random()*(w-80)+40; } });
         if(player.y>h+80){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(0,0,w,h);ctx.fillStyle='#fff';ctx.font='bold 20px Inter';ctx.textAlign='center';ctx.fillText('You fell! • '+score+' coins',w/2,h/2);reportScore({game:'jump',points:score});cancelAnimationFrame(RAF)}}
       loop(); return ()=>{window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku)}}
@@ -496,7 +488,7 @@ function renderMiniGame(){
   });
 }
 
-/* bottom nav — ONLY opens modal on Mini Game when not linked */
+/* bottom nav — modal only on Mini Game when not linked */
 document.querySelectorAll('.iconnav .itab').forEach(btn=>{
   btn.addEventListener('click',()=>{
     closeGate();
@@ -514,16 +506,31 @@ document.addEventListener('click',e=>{
     $('#gateHint').textContent='After submitting your username in the bot, tap PLAY NOW to return.';
   }
   if(e.target.id==='useToken'){
-    const raw = ($('#pasteToken').value||'').trim();
-    if(!raw) return;
-    let tok = raw;
-    try{ const u = new URL(raw); tok = u.searchParams.get('token') || raw; }catch{}
-    localStorage.setItem('auth_token', tok);
-    (async()=>{ try{
-      const r = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'whoami',token:tok})});
-      const j = await r.json();
-      if(j.ok && j.user) localStorage.setItem('player_name', j.user.rico_username || j.user.telegram_username || 'player');
-    }catch{} finally{ state.tab='minigame'; render(); closeGate(); }})();
+    const rawIn = ($('#pasteToken').value||'').trim();
+    if(!rawIn) return;
+    // If looks like URL/token -> verify; otherwise treat as ricobet_username and call 'telegram' fallback.
+    let looksLikeToken = rawIn.startsWith('http') || rawIn.length > 24;
+    (async ()=>{
+      try{
+        if(looksLikeToken){
+          let tok = rawIn;
+          try{ const u = new URL(rawIn); tok = u.searchParams.get('token') || rawIn; }catch{}
+          localStorage.setItem('auth_token', tok);
+          const r = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'whoami',token:tok})});
+          const j = await r.json();
+          if(!(j && j.ok)){ throw new Error('bad token'); }
+          localStorage.setItem('player_name', j.user.rico_username || j.user.telegram_username || 'player');
+        }else{
+          const rr = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({kind:'telegram', ricobet_username: rawIn, data:{ id: localStorage.getItem('tg_id')||('guest-'+Date.now()), username: localStorage.getItem('tg_username')||'' }})});
+          const jj = await rr.json();
+          if(!(jj && jj.ok && jj.token)) throw new Error('fallback failed');
+          localStorage.setItem('auth_token', jj.token);
+          localStorage.setItem('player_name', jj.user?.ricoUsername || rawIn);
+        }
+      }catch(e){ toast('Unlock failed'); return; }
+      state.tab='minigame'; render(); closeGate(); toast('Unlocked');
+    })();
   }
 });
 
@@ -545,7 +552,7 @@ document.addEventListener('click',e=>{
   }
 })();
 
-/* initial UI + extra safety */
+/* initial UI + safety */
 render(); moveInk(0);
 setInterval(()=>{ if (state.tab!=='minigame') closeGate(); }, 400);
 </script>
