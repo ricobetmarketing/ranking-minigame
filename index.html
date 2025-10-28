@@ -6,16 +6,20 @@
 <meta name="color-scheme" content="dark"/>
 <title>Referral Race + Mini Games</title>
 <style>
-  :root{--bg:#0c0c12;--ink:#eef2ff;--muted:#a0a7c9;--edge:rgba(255,255,255,.08);--p1:#8b5dff;--p2:#aa74ff;--glow:rgba(153,120,255,.3);--acc:#ffd86a}
+  :root{--bg:#0c0c12;--ink:#eef2ff;--muted:#a0a7c9;--edge:rgba(255,255,255,.08);
+        --p1:#8b5dff;--p2:#aa74ff;--glow:rgba(153,120,255,.3);--acc:#ffd86a}
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;overflow-x:hidden;background:radial-gradient(1000px 700px at 50% -10%,#1b1c3f 0%,transparent 60%),linear-gradient(180deg,#0b0c1a,#070813);color:var(--ink);font:15px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  html,body{margin:0;height:100%;overflow-x:hidden;
+    background:radial-gradient(1000px 700px at 50% -10%,#1b1c3f 0%,transparent 60%),
+               linear-gradient(180deg,#0b0c1a,#070813);
+    color:var(--ink);font:15px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
   .app{max-width:520px;margin:0 auto;min-height:100dvh;display:grid;grid-template-rows:auto 1fr}
   header{position:sticky;top:0;background:linear-gradient(180deg,#10112a,#0d0e23);border-bottom:1px solid var(--edge);padding:12px 16px;z-index:20}
   .hrow{display:flex;align-items:center;justify-content:space-between}
   .title{font-weight:900;font-size:18px}
   main{padding:14px 14px 116px}
   .card{background:linear-gradient(180deg,#151533,#10112a);border:1px solid var(--edge);border-radius:16px;padding:14px;margin-bottom:12px}
-  h2{margin:0 0 8px;font-size:18px} h3{margin:0 0 8px;font-size:16px}
+  h1,h2,h3{margin:0 0 8px} h1{font-size:20px} h2{font-size:18px} h3{font-size:16px}
   p{margin:0 0 8px;color:#dfe5ff}
 
   /* RANKS */
@@ -50,17 +54,17 @@
   .rr .result{margin-top:8px;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.08);color:#2b2350;border-radius:12px;padding:10px 12px;font-weight:700;display:none}
 
   /* NAV */
-  .iconnav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));width:min(520px,100% - 12px);display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:10px 12px;background:rgba(16,17,42,.98);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:16px;z-index:1000;--hot:#ff4fd8;--hot2:#ff9ae8;--ix:0}
+  .iconnav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));width:min(520px,100% - 12px);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px;background:rgba(16,17,42,.98);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:16px;z-index:1000;--hot:#ff4fd8;--hot2:#ff9ae8;--ix:0}
   .iconnav .itab{appearance:none;border:0;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;color:#cdd7ff;font-weight:800;border-radius:14px}
   .iconnav .itab span{font-size:11px}
   .iconnav .ico{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s,color .25s}
   .iconnav .itab.active .ico{transform:translateY(-2px) scale(1.06)} .iconnav .itab.active{color:#fff}
-  .iconnav .inkbar{position:absolute;bottom:10px;height:44px;left:12px;right:12px;width:calc((100% - 24px - 8px*4)/5);border-radius:16px;background:radial-gradient(90% 140% at 10% 0%,var(--hot) 0%,var(--hot2) 60%,#ffcabf 100%);box-shadow:0 12px 26px rgba(255,79,216,.35), inset 0 -2px 6px rgba(0,0,0,.18);transform:translateX(calc(var(--ix) * (100% + 8px)));transition:transform .28s cubic-bezier(.22,.9,.24,1)}
+  .iconnav .inkbar{position:absolute;bottom:10px;height:44px;left:12px;right:12px;width:calc((100% - 24px - 8px*3)/4);border-radius:16px;background:radial-gradient(90% 140% at 10% 0%,var(--hot) 0%,var(--hot2) 60%,#ffcabf 100%);box-shadow:0 12px 26px rgba(255,79,216,.35), inset 0 -2px 6px rgba(0,0,0,.18);transform:translateX(calc(var(--ix) * (100% + 8px)));transition:transform .28s cubic-bezier(.22,.9,.24,1)}
 
-  /* SOUND */
-  .soundBtn{position:fixed;right:12px;bottom:calc(72px + env(safe-area-inset-bottom,0));background:rgba(255,255,255,.95);color:#111;border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:10px 12px;display:none;gap:8px;align-items:center;font-weight:900;z-index:1100;box-shadow:0 10px 24px rgba(0,0,0,.25)}
-  .soundBtn.show{display:inline-flex} .soundBtn.active{background:linear-gradient(90deg,#ffd86a,#ffc24d)}
-  .soundBtn .ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8}
+  /* SHARE BAR */
+  .shareRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .sx{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--edge);background:#14153a;border-radius:12px;padding:10px 12px;font-weight:900}
+  .sx svg{width:18px;height:18px}
 
   /* MINI GAME */
   .mg-tabs{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
@@ -81,7 +85,6 @@
   .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:900;cursor:pointer}
   .btnPrimary{background:#ffd86a;color:#361e00;box-shadow:0 4px 0 rgba(0,0,0,.12)}
-  .inp{width:100%;border-radius:10px;border:1px solid var(--edge);background:#0f1030;color:#eff3ff;padding:10px 12px}
   .dim{font-size:12px;color:#aeb9ff}
   .closeX{position:absolute;right:10px;top:10px;background:transparent;border:0;color:#cfd8ff;font-weight:900;font-size:16px;cursor:pointer}
 </style>
@@ -97,7 +100,7 @@
     <main id="view"></main>
   </div>
 
-  <!-- Bottom Nav -->
+  <!-- Bottom Nav (4 tabs) -->
   <nav class="iconnav" aria-label="Primary">
     <div class="inkbar" aria-hidden="true"></div>
     <button class="itab active" data-tab="home" data-idx="0" aria-label="Home">
@@ -106,54 +109,42 @@
     <button class="itab" data-tab="ranks" data-idx="1" aria-label="Ranks">
       <svg class="ico" viewBox="0 0 24 24"><path d="M7 22V11a2 2 0 0 1 2-2h6v13H7zM3 22v-7a2 2 0 0 1 2-2h1v9H3zM17 22V5a2 2 0 0 1 2-2h2v19h-4zM10 5l2-3 2 3"/></svg><span>Ranks</span>
     </button>
-    <button class="itab" data-tab="terms" data-idx="2" aria-label="T & C">
-      <svg class="ico" viewBox="0 0 24 24"><path d="M6 3h9l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM15 3v4h4M8 11h8M8 15h8M8 7h4"/></svg><span>T&amp;C</span>
-    </button>
-    <button class="itab" data-tab="community" data-idx="3" aria-label="Community">
+    <button class="itab" data-tab="community" data-idx="2" aria-label="Community">
       <svg class="ico" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5zM18.5 11.5a3 3 0 1 0-2.5-5 5.8 5.8 0 0 1 .7 2.5 5.8 5.8 0 0 1-.6 2.5 3 3 0 0 0 2.4 0z"/></svg><span>Community</span>
     </button>
-    <button class="itab" data-tab="minigame" data-idx="4" aria-label="Mini Game">
+    <button class="itab" data-tab="minigame" data-idx="3" aria-label="Mini Game">
       <svg class="ico" viewBox="0 0 24 24"><path d="M4 8a4 4 0 0 1 4-4h2a2 2 0 0 1 2 2v1h2a2 2 0 0 1 2 2v1h2a2 2 0 0 1 2 2v2h-4l-2 3H8l-2-3H2v-3a3 3 0 0 1 2-3z"/></svg><span>Mini Game</span>
     </button>
   </nav>
 
-  <!-- Optional audio -->
-  <audio id="bgm" src="theme.mp3" preload="auto" loop playsinline></audio>
-  <button id="soundBtn" class="soundBtn" aria-label="Toggle sound" title="Sound">
-    <svg viewBox="0 0 24 24" class="ic"><path d="M4 10h4l5-4v12l-5-4H4zM17 8a5 5 0 010 8"/></svg><span>Sound</span>
-  </button>
-
-  <!-- Login Gate (only opens from Mini Game tab if not linked) -->
+  <!-- Login Gate (opens ONLY on Mini Game if not linked) -->
   <div id="gate" class="modalBackdrop hidden" role="dialog" aria-modal="true">
     <div class="modalCard">
       <button id="gateClose" class="closeX" aria-label="Close">✕</button>
       <h3>Login required</h3>
-      <p class="dim">1) Start the Telegram bot → 2) Enter your <b>ricobet_username</b> → 3) Save & continue.</p>
+      <p class="dim">Start the Telegram bot and submit your <b>ricobet_username</b>. The bot will return a <b>PLAY NOW</b> link that unlocks instantly.</p>
       <div class="row" style="margin-top:8px">
         <a id="startBot" class="btn btnPrimary" href="https://t.me/ricobet_minigamebot?start=play" target="_blank" rel="noopener">Start the Bot</a>
+        <span class="dim">Then tap <b>PLAY NOW</b> in the bot.</span>
       </div>
-      <div class="row" style="margin-top:8px">
-        <input id="ricoInput" class="inp" placeholder="ricobet_username"/>
-        <button id="btnBind" class="btn btnPrimary">Save & Continue</button>
-      </div>
-      <p class="dim" id="gateHint" style="margin-top:8px">We unlock instantly and also send to Google Sheets.</p>
+      <p class="dim" id="gateHint" style="margin-top:8px">Waiting for return via PLAY NOW…</p>
     </div>
   </div>
-
-  <script src="https://telegram.org/js/telegram-widget.js?22"></script>
 
 <script>
 /* ===== CONFIG ===== */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxo_JlcM5rL9v7quZ_HViaSStZ9L7pAPCZ_E1YUHsIGf7KV8fs4MRo2NBkb4qI7x1i6wA/exec";
-const SHEET_ID  = "1rJg4RYn0AkvsqhVGk5CwhZrYNz0gFC6_7ZPiDXigU-o";
-const SHEET_GID = "0";
+
+/* Leaderboard sheet (your public/ranking sheet) */
+const RANK_SHEET_ID  = "1rJg4RYn0AkvsqhVGk5CwhZrYNz0gFC6_7ZPiDXigU-o";
+const RANK_SHEET_GID = "0";
 
 /* ===== helpers ===== */
 const $=(s,el)=> (el||document).querySelector(s);
 const $all=(s,el)=> Array.from((el||document).querySelectorAll(s));
 const fmt=n=>{n=Number(n||0);return n>=1000?(Math.round(n/100)/10).toLocaleString()+"K":n.toLocaleString()};
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const faceBg=url=> url?`url("${url}")`:`url("data:image/svg+xml;utf8,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23a0c4ff'/><stop offset='100%' stop-color='%238f6bff'/></linearGradient></defs><rect width='64' height='64' rx='16' fill='url(%23g)'/><circle cx='32' cy='26' r='12' fill='white' opacity='.9'/><rect x='14' y='40' width='36' height='16' rx='8' fill='white' opacity='.9'/></svg>")}")`;
+const faceBg=url=> `url("data:image/svg+xml;utf8,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23a0c4ff'/><stop offset='100%' stop-color='%238f6bff'/></linearGradient></defs><rect width='64' height='64' rx='16' fill='url(%23g)'/><circle cx='32' cy='26' r='12' fill='white' opacity='.9'/><rect x='14' y='40' width='36' height='16' rx='8' fill='white' opacity='.9'/></svg>")}")`;
 const unique=a=>Array.from(new Set(a));
 const qs = new URLSearchParams(location.search);
 
@@ -161,91 +152,58 @@ const qs = new URLSearchParams(location.search);
 let state={tab:'home'};
 let ALL=[],WEEKS=[],CUR_WEEK='',TOP100=[];
 
-/* Linked check (one-time) */
-const isLinked = () =>
-  localStorage.getItem('linked') === 'true' ||
-  !!localStorage.getItem('player_provider_id') ||
-  !!localStorage.getItem('auth_token');
+/* Linked check (token present) */
+const isLinked = () => !!localStorage.getItem('auth_token');
 
-// ===== gate (only visible while Mini Game tab is active) =====
-function openGate(){
-  if (state.tab !== 'minigame') return;           // hard guard
-  const m = document.getElementById('gate');
-  if (m) m.classList.remove('hidden');
-}
-function closeGate(){
-  const m = document.getElementById('gate');
-  if (m && !m.classList.contains('hidden')) m.classList.add('hidden');
-}
+/* ===== gate (ONLY while Mini Game tab active) ===== */
+function openGate(){ if (state.tab!=='minigame') return; $('#gate')?.classList.remove('hidden'); }
+function closeGate(){ $('#gate')?.classList.add('hidden'); }
 
-
-/* finalize link */
-async function finalizeLink(username){
-  localStorage.setItem('linked','true');
-  localStorage.setItem('player_provider','telegram');
-  localStorage.setItem('player_provider_id', localStorage.getItem('player_provider_id') || ('guest-'+Date.now()));
-  localStorage.setItem('player_name', username || localStorage.getItem('player_name') || 'player');
-
-  try{
-    await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      kind:'register_from_page',
-      ricobet_username: username || '',
-      telegram_id: localStorage.getItem('tg_id')||'',
-      telegram_username: localStorage.getItem('tg_username')||''
-    })});
-  }catch(e){}
-
-  closeGate();
-  state.tab='minigame';
-  render();
-  setTimeout(()=>{ try{document.getElementById('mgStart')?.focus();}catch{} },150);
-}
-
-/* ===== nav / router ===== */
+/* ===== router ===== */
 function moveInk(ix){ document.querySelector('.iconnav').style.setProperty('--ix', ix); }
 function render(){
-  // header title…
-  document.getElementById('hdrTitle').textContent =
+  $('#hdrTitle').textContent =
     state.tab==='ranks' ? 'Referral Ranking' :
-    state.tab==='terms' ? 'Terms & FAQ' :
     state.tab==='community' ? 'Community' :
     state.tab==='minigame' ? 'Mini Game' : 'Referral Race';
 
-  // **force-close the gate if you’re not on minigame**
   if (state.tab !== 'minigame') closeGate();
-
-  // tab active state + inkbar…
-  // then route to view…
-}
-
 
   $all('.iconnav .itab').forEach(b=>b.classList.toggle('active',b.dataset.tab===state.tab));
   moveInk(parseInt(document.querySelector('.iconnav .itab.active')?.dataset.idx||'0',10));
 
   if(state.tab==='ranks') renderRanks();
-  else if(state.tab==='terms') renderTerms();
   else if(state.tab==='community') renderCommunity();
   else if(state.tab==='minigame') renderMiniGame();
   else renderHome();
 }
 
-/* ===== views ===== */
+/* ===== HOME (+ T&C combined) ===== */
 function renderHome(){
   $('#view').innerHTML = `
     <div class="card">
-      <h2>Referral Race</h2>
+      <h1>Referral Race</h1>
       <p>Invite friends, climb the leaderboard, and win rewards.</p>
       <ul style="margin:6px 0 0 18px;color:#dfe5ff">
         <li>Share your referral link with friends.</li>
         <li>Every verified signup = <b>+1 point</b>.</li>
         <li><b>Weekly</b> leaderboard resets every Monday.</li>
       </ul>
+    </div>
+
+    <div class="card">
+      <h2>Terms &amp; Conditions</h2>
+      <p>By joining the Referral Race, you agree to the rules below.</p>
+      <details open><summary>How do I earn points?</summary><p>Each verified signup via your link grants <b>+1 point</b>. Bonus events may add extra points.</p></details>
+      <details><summary>When are winners announced?</summary><p>Weekly winners every Monday.</p></details>
+      <details><summary>How do payouts work?</summary><p>Rewards are credited within 72 hours after announcement.</p></details>
+      <details><summary>Anti-fraud</summary><p>Duplicate or fake signups will be removed; repeated abuse may lead to disqualification.</p></details>
     </div>`;
 }
 
-/* Leaderboard (Google Visualization JSON) */
+/* ====== RANKS (reads your sheet gid=0) ====== */
 async function fetchGViz(){
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${encodeURIComponent(SHEET_GID)}`;
+  const url=`https://docs.google.com/spreadsheets/d/${RANK_SHEET_ID}/gviz/tq?tqx=out:json&gid=${encodeURIComponent(RANK_SHEET_GID)}`;
   const text=await fetch(url,{cache:"no-store"}).then(r=>r.text());
   const j=(text.match(/google\.visualization\.Query\.setResponse\((.*)\);?/s)||[])[1]; if(!j) throw new Error('parse');
   const data=JSON.parse(j);
@@ -255,13 +213,18 @@ async function fetchGViz(){
 }
 function pickIndex(headers,aliases){const L=headers.map(h=>String(h||'').toLowerCase());for(const a of aliases){const j=L.findIndex(h=>h.includes(a));if(j>-1)return j}return -1}
 function normalize({headers:h,rows}){
-  const ui=pickIndex(h,["username","user","player","name"]);
+  // be tolerant to header names
+  const ui=pickIndex(h,["rico_username","username","player","name"]);
   const pi=pickIndex(h,["points","score","total","referrals"]);
-  const ai=pickIndex(h,["avatar","image","img","photo","icon","avatarurl"]);
-  const wi=pickIndex(h,["week","period"]);
+  const wi=pickIndex(h,["week_label","week","period"]);
   const di=pickIndex(h,["date","day","created","timestamp"]);
   if(ui<0||pi<0||wi<0) throw new Error('missing cols');
-  return rows.map(r=>({username:String(r[ui]||"").trim(),points:Number(String(r[pi]).replace(/[^\d.\-]/g,''))||0,avatar:String((ai>-1? r[ai] :"")||"").trim(),week:String(r[wi]||"").trim(),date: di>-1? String(r[di]||"").trim() : ""})).filter(x=>x.username);
+  return rows.map(r=>({
+    username:String(r[ui]||"").trim(),
+    points:Number(String(r[pi]).replace(/[^\d.\-]/g,''))||0,
+    week:String(r[wi]||"").trim(),
+    date: di>-1? String(r[di]||"").trim() : ""
+  })).filter(x=>x.username);
 }
 function renderRanks(){
   $('#view').innerHTML=`
@@ -286,9 +249,19 @@ function renderRanks(){
       <div class="search"><input id="rr-q" class="input" placeholder="Search username (top 100)…"/><button id="rr-find" class="go">Find</button></div>
       <div id="rr-mine" class="result"></div>
     </div>`;
+
   if(!ALL.length){
-    fetchGViz().then(normalize).then(items=>ALL=items).catch(()=> {
-      ALL=[{week:'Week 1',username:'alice',points:3000,avatar:''},{week:'Week 1',username:'bob',points:2500,avatar:''},{week:'Week 1',username:'ricobet',points:1000,avatar:''}];
+    fetchGViz().then(normalize).then(items=>{
+      // aggregate by week + username (sum points)
+      const agg=new Map();
+      for(const it of items){
+        const key=it.week+"||"+it.username;
+        const cur=agg.get(key)||{week:it.week,username:it.username,points:0,date:it.date};
+        cur.points+=it.points; agg.set(key,cur);
+      }
+      ALL=[...agg.values()];
+    }).catch(()=> {
+      ALL=[{week:'Week 1',username:'alice',points:30},{week:'Week 1',username:'bob',points:25},{week:'Week 1',username:'ricobet',points:10}];
     }).finally(()=>{buildWeeks();fillWeekUI();});
   }else{buildWeeks();fillWeekUI();}
 
@@ -305,10 +278,10 @@ function renderRanks(){
   function filterWeekDay(week,day){let arr=ALL.filter(x=>x.week===week);if(day)arr=arr.filter(x=>(x.date||'')===day);arr=arr.sort((a,b)=>b.points-a.points);arr.forEach((x,i)=>x.rank=i+1);return arr}
   function renderWeek(){
     const day=$('#daySel')?.value||'';const items=filterWeekDay(CUR_WEEK,day);
-    const setPod=(id,row)=>{ $(`#rr-p${id}a`).style.backgroundImage=faceBg(row?row.avatar:''); $(`#rr-p${id}n`).textContent=row?row.username:'—'; $(`#rr-p${id}s`).textContent=row?(fmt(row.points)+' pts'):'' }
+    const setPod=(id,row)=>{ $(`#rr-p${id}a`).style.backgroundImage=faceBg(''); $(`#rr-p${id}n`).textContent=row?row.username:'—'; $(`#rr-p${id}s`).textContent=row?(fmt(row.points)+' pts'):'' }
     setPod(1,items[0]||null);setPod(2,items[1]||null);setPod(3,items[2]||null);
     const list=$('#rr-list');list.innerHTML='';items.slice(3,15).forEach(r=>list.insertAdjacentHTML('beforeend',
-      `<div class="row"><div class="rk">${r.rank}</div><div class="left"><div class="face" style="background-image:${faceBg(r.avatar)}"></div><div class="uname">${esc(r.username)}</div></div><div class="val">${fmt(r.points)}</div></div>`));
+      `<div class="row"><div class="rk">${r.rank}</div><div class="left"><div class="face" style="background-image:${faceBg('')}"></div><div class="uname">${esc(r.username)}</div></div><div class="val">${fmt(r.points)}</div></div>`));
     TOP100=items.slice(0,100);
   }
   function findUser(){const q=($('#rr-q').value||'').trim().toLowerCase();const res=$('#rr-mine');if(!q){res.style.display='block';res.textContent='Enter a username';return}
@@ -316,38 +289,48 @@ function renderRanks(){
     const day=$('#daySel').value;const scope=day?day:(CUR_WEEK||'this week');res.innerHTML=`<b>${esc(hit.username)}</b> — Rank <b>${hit.rank}</b> • ${fmt(hit.points)} pts • ${esc(scope)}`}
 }
 
-/* T&C / Community */
-function renderTerms(){
+/* ===== Community ===== */
+function renderCommunity(){
+  const shareText = encodeURIComponent("Join me in the Ricobet Referral Race! ");
+  const pageUrl   = encodeURIComponent(location.href.split('#')[0]);
+  const tgUrl = `https://t.me/share/url?url=${pageUrl}&text=${shareText}`;
+  const waUrl = `https://wa.me/?text=${shareText}%20${pageUrl}`;
   $('#view').innerHTML=`
-    <div class="card"><h2>Terms & Conditions</h2><p>By joining the Referral Race, you agree to the rules below.</p></div>
-    <div class="card"><h3>FAQ</h3>
-      <details open><summary>How do I earn points?</summary><p>Each verified signup via your link grants <b>+1 point</b>. Bonus events may add extra points.</p></details>
-      <details><summary>When are winners announced?</summary><p>Weekly winners every Monday.</p></details>
-      <details><summary>How do payouts work?</summary><p>Rewards are credited within 72 hours after announcement.</p></details>
-      <details><summary>Anti-fraud</summary><p>Duplicate or fake signups will be removed; repeated abuse may lead to disqualification.</p></details>
+    <div class="card">
+      <h2>Share with friends!</h2>
+      <div class="shareRow" style="margin:8px 0 0">
+        <a class="sx" href="${tgUrl}" target="_blank" rel="noopener" aria-label="Share on Telegram">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M9.7 14.2l-.4 5.6c.6 0 .9-.3 1.2-.6l2.9-2.8 6.1 4.5c1.1.6 1.8.3 2.1-1l3.9-18.4c.4-1.6-.6-2.3-1.6-1.9L1.4 9.1c-1.6.6-1.6 1.6-.3 2l5.6 1.8L19.7 6c.7-.5 1.3-.2.8.3"/></svg>
+          Telegram
+        </a>
+        <a class="sx" href="${waUrl}" target="_blank" rel="noopener" aria-label="Share on WhatsApp">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M.5 24l1.7-6.1A10.9 10.9 0 1112 22.9a10.9 10.9 0 01-5.3-1.4L.5 24zM6.7 19a9 9 0 004.5 1.2h.1a9 9 0 009-9 9 9 0 10-16.5 4.4l-.3.6-1 3.6 3.7-1 0-.1z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <div class="card"><h2>Social</h2>
+      <p>Follow us for updates and winners.</p>
+      <ul style="margin:8px 0 0 18px">
+        <li>Facebook</li>
+        <li>Instagram</li>
+        <li>Twitter / X</li>
+        <li>Telegram</li>
+        <li>YouTube</li>
+      </ul>
     </div>`;
 }
-function renderCommunity(){
-  $('#view').innerHTML=`<div class="card"><h2>Share & Follow</h2><p>Invite friends and follow us.</p></div>
-  <div class="card">Facebook • Instagram • Telegram • X • YouTube</div>`;
-}
 
-/* report score → GAS */
-async function reportScore({game,points,week=""}){
-  const token=localStorage.getItem('auth_token')||'';
-  const userId=localStorage.getItem('player_provider_id')||'';
-  const userName=localStorage.getItem('player_name')||'';
-  try{
-    await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({kind:'score',token,userId,userName,game,points,week})});
-  }catch(e){}
-}
-
-/* Mini games */
+/* ===== Mini games (requires token) ===== */
 function renderMiniGame(){
-  if(!isLinked()){ openGate(); $('#view').innerHTML=`<div class="card"><h2>Mini Game</h2><p class="dim">Tap the Mini Game tab again to open login.</p></div>`; return; }
+  if(!isLinked()){
+    $('#view').innerHTML=`<div class="card"><h2>Mini Game</h2><p class="dim">Tap the Mini Game tab again to open login.</p></div>`;
+    openGate();
+    return;
+  }
 
-  const who=esc(localStorage.getItem('player_name')||'Linked');
+  const who=esc(localStorage.getItem('player_name')||'Player');
   $('#view').innerHTML=`
     <div class="card"><h2>Mini Game</h2><p class="dim">Linked as <b>${who}</b>. Scores will be sent to Google Sheets.</p></div>
     <div class="card">
@@ -381,6 +364,15 @@ function renderMiniGame(){
     ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#0a0f22'; ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle='#fff'; ctx.font='bold 16px Inter'; ctx.textAlign='center'; ctx.fillText('Press Start', canvas.width/2, canvas.height/2)}
 
+  async function reportScore({game,points}){
+    const token=localStorage.getItem('auth_token')||'';
+    if(!token) return;
+    try{
+      await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({kind:'score',token,game,points})});
+    }catch(e){}
+  }
+
   function runFlappy(){const w=canvas.width,h=canvas.height;let bird={x:w*0.28,y:h*0.45,r:12,vy:0},pipes=[],gap=110,t=0,gravity=0.45,jump=-6.5,alive=true,score=0;
     function spawn(){const top=40+Math.random()*(h-gap-80);pipes.push({x:w+20,top,bot:top+gap,w:38,scored:false})}
     function flap(){if(!alive)return; bird.vy=jump} canvas.onclick=flap; const keyH=e=>{if(e.code==='Space')flap()}; window.addEventListener('keydown',keyH);
@@ -390,7 +382,7 @@ function renderMiniGame(){
         if(!p.scored && p.x+p.w<bird.x){p.scored=true;score++} if(p.x+p.w<0)pipes.splice(i,1); if(bird.x>p.x-bird.r && bird.x<p.x+p.w+bird.r){if(bird.y-bird.r<p.top||bird.y+bird.r>p.bot)alive=false}}
       bird.vy+=gravity;bird.y+=bird.vy;ctx.fillStyle='#7fe3ff';ctx.beginPath();ctx.arc(bird.x,bird.y,bird.r,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='#ffd86a';ctx.fillRect(bird.x-10,bird.y-bird.r-10,20,6);ctx.fillStyle='#fff';ctx.font='bold 16px Inter';ctx.textAlign='start';ctx.fillText('Score: '+score,12,24);
-      if(bird.y>h-10||bird.y<10)alive=false; if(!alive){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(0,0,w,h);ctx.fillStyle='#fff';ctx.font='bold 20px Inter';ctx.textAlign='center';ctx.fillText('Game Over • '+score+' pts',w/2,h/2);reportScore({game:'flappy',points:score,week:CUR_WEEK||''});cancelAnimationFrame(RAF)}}
+      if(bird.y>h-10||bird.y<10)alive=false; if(!alive){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(0,0,w,h);ctx.fillStyle='#fff';ctx.font='bold 20px Inter';ctx.textAlign='center';ctx.fillText('Game Over • '+score+' pts',w/2,h/2);reportScore({game:'flappy',points:score});cancelAnimationFrame(RAF)}}
     loop(); return ()=>{canvas.onclick=null;window.removeEventListener('keydown',keyH)}}
 
   function runPlinko(){const w=canvas.width,h=canvas.height;const pins=[],cols=9,rows=7,spacing=w/(cols+1),offsetY=70;
@@ -402,7 +394,7 @@ function renderMiniGame(){
       ctx.fillStyle='#8aa3ff';pins.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fill()});
       if(ball){ball.vy+=0.35;ball.x+=ball.vx;ball.y+=ball.vy;if(ball.x<ball.r){ball.x=ball.r;ball.vx*=-0.6} if(ball.x>w-ball.r){ball.x=w-ball.r;ball.vx*=-0.6}
         pins.forEach(p=>{const dx=ball.x-p.x,dy=ball.y-p.y,d=Math.hypot(dx,dy);if(d<ball.r+5){const ang=Math.atan2(dy,dx),speed=Math.hypot(ball.vx,ball.vy)*0.9+1,dir=(Math.random()<0.5?-1:1)*0.9;ball.vx=Math.cos(ang)*speed*dir;ball.vy=Math.sin(ang)*speed;const ov=ball.r+5-d;ball.x+=Math.cos(ang)*ov;ball.y+=Math.sin(ang)*ov}});
-        if(ball.y>h-12){ball.vy*=-0.35;ball.y=h-12;ball.vx*=0.95;if(Math.abs(ball.vy)<0.5){let idx=Math.max(0,Math.min(cols-1,Math.round(ball.x/spacing)-1));lastAward=slotVals[idx]||0;ctx.fillStyle='#fff';ctx.font='bold 18px Inter';ctx.textAlign='center';ctx.fillText('+'+lastAward+' pts',w/2,h/2);reportScore({game:'plinko',points:lastAward,week:CUR_WEEK||''});ball=null}}
+        if(ball.y>h-12){ball.vy*=-0.35;ball.y=h-12;ball.vx*=0.95;if(Math.abs(ball.vy)<0.5){let idx=Math.max(0,Math.min(cols-1,Math.round(ball.x/spacing)-1));lastAward=slotVals[idx]||0;ctx.fillStyle='#fff';ctx.font='bold 18px Inter';ctx.textAlign='center';ctx.fillText('+'+lastAward+' pts',w/2,h/2);reportScore({game:'plinko',points:lastAward});ball=null}}
         ctx.fillStyle='#ffd86a';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill()}
       else{const x=(Date.now()/8)%w;ctx.fillStyle='#fff8';ctx.fillRect(x,30,2,20);if(lastAward){ctx.fillStyle='#fff';ctx.font='bold 16px Inter';ctx.textAlign='center';ctx.fillText('Last: +'+lastAward,w/2,28)}}}
     loop(); return ()=>{canvas.onclick=null}}
@@ -417,23 +409,18 @@ function renderMiniGame(){
       plats.forEach(p=>{ctx.fillStyle='#273a8c';ctx.fillRect(p.x-30,p.y,60,8);if(player.vy>0&&player.y+player.r<p.y+8&&player.y+player.r>p.y&&Math.abs(player.x-p.x)<34){player.vy=-7.8;score++} if(p.y>h+20){p.y=-20;p.x=Math.random()*(w-80)+40}})
       ctx.fillStyle='#7fe3ff';ctx.beginPath();ctx.arc(player.x,player.y,player.r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffd86a';ctx.fillRect(player.x-10,player.y-player.r-10,20,6);
       ctx.fillStyle='#fff';ctx.font='bold 16px Inter';ctx.textAlign='start';ctx.fillText('Score: '+score,12,24);
-      if(player.y>h+80){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(0,0,w,h);ctx.fillStyle='#fff';ctx.font='bold 20px Inter';ctx.textAlign='center';ctx.fillText('You fell! • '+score+' pts',w/2,h/2);reportScore({game:'jump',points:score,week:CUR_WEEK||''});cancelAnimationFrame(RAF)}}
+      if(player.y>h+80){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(0,0,w,h);ctx.fillStyle='#fff';ctx.font='bold 20px Inter';ctx.textAlign='center';ctx.fillText('You fell! • '+score+' pts',w/2,h/2);reportScore({game:'jump',points:score});cancelAnimationFrame(RAF)}}
     loop(); return ()=>{window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku)}}
 
   stopGame();
 }
 
-// bottom nav
-document.querySelectorAll('.iconnav .itab').forEach(btn=>{
+/* bottom nav — open gate ONLY when Mini Game clicked and not linked */
+$all('.iconnav .itab').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    const tab = btn.getAttribute('data-tab');
-
-    // always close the modal first
-    closeGate();
-
-    state.tab = tab;
-    if (tab === 'minigame' && !isLinked()) {
-      // render first so the title/tab state updates, then open
+    const tab=btn.getAttribute('data-tab');
+    state.tab=tab;
+    if(tab==='minigame' && !isLinked()){
       render();
       openGate();
       return;
@@ -441,76 +428,39 @@ document.querySelectorAll('.iconnav .itab').forEach(btn=>{
     render();
   });
 });
-/* gate buttons & UX */
+
+/* gate controls */
 document.addEventListener('click',e=>{
   if(e.target.id==='gateClose') closeGate();
-  if(e.target.id==='btnBind'){
-    const v=($('#ricoInput').value||'').trim();
-    if(!v){ alert('Please enter ricobet_username'); return; }
-    finalizeLink(v);
-  }
   if(e.target.id==='startBot'){
     localStorage.setItem('await_bot_return','1');
-    $('#gateHint').textContent = 'After you enter your username in the bot, tap PLAY NOW to return here.';
+    $('#gateHint').textContent='After submitting your username in the bot, tap PLAY NOW to return.';
   }
 });
 
-/* Nudge when coming back from bot */
-window.addEventListener('focus',()=>{
-  if(localStorage.getItem('await_bot_return')==='1' && !isLinked()){
-    $('#gateHint').textContent = 'Great! Now tap PLAY NOW in the bot or paste your username above.';
-  }
-});
-
-/* === Deep links ===
-   ?token=...&play=1  → whoami, mark linked, go Mini Game
-   ?rico=username&play=1 → finalizeLink(username), go Mini Game
-*/
+/* deep link: ?token=...&play=1 unlocks instantly */
 (async function bootAuthFromParams(){
-  const play = qs.get('play') === '1';
-  const rico = (qs.get('rico')||'').trim();
   const token = (qs.get('token')||'').trim();
-
+  const play  = qs.get('play')==='1';
   if(token){
     localStorage.setItem('auth_token', token);
     try{
-      const r = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'whoami',token})});
+      const r = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({kind:'whoami',token})});
       const j = await r.json();
       if(j.ok && j.user){
-        localStorage.setItem('player_provider','telegram');
-        localStorage.setItem('player_provider_id', String(j.user.telegram_id||''));
         localStorage.setItem('player_name', j.user.rico_username || j.user.telegram_username || 'player');
-        localStorage.setItem('tg_id', String(j.user.telegram_id||''));
-        localStorage.setItem('tg_username', j.user.telegram_username||'');
-        localStorage.setItem('linked','true');
       }
     }catch(e){}
-    if(play){ state.tab='minigame'; render(); return; }
+    if(play){ state.tab='minigame'; }
   }
-
-  if(rico && !isLinked()){
-    await finalizeLink(rico);
-    if(play){ return; }
-  }
-
-  if(play){ state.tab='minigame'; }
 })();
 
 /* boot UI */
 render(); moveInk(0);
 
-/* Optional audio */
-(function(){
-  const audio=$('#bgm'), btn=$('#soundBtn'); if(!audio||!btn) return;
-  const saved=localStorage.getItem('bgm_pref'); if(saved==='off'){audio.muted=true} if(saved==='on'){audio.muted=false}
-  document.addEventListener('DOMContentLoaded',tryPlay,{once:true});
-  async function tryPlay(){try{if(localStorage.getItem('bgm_pref')==='off'){btn.classList.add('show');return}
-    audio.muted=false; await audio.play(); btn.classList.remove('show'); localStorage.setItem('bgm_pref','on')}
-    catch(e){btn.classList.add('show');['pointerdown','keydown','touchstart'].forEach(evt=>document.addEventListener(evt,unlock,{once:true}))}}
-  async function unlock(){try{audio.muted=false;await audio.play();btn.classList.remove('show');btn.classList.add('active');localStorage.setItem('bgm_pref','on')}catch{}}
-  btn.addEventListener('click',async()=>{try{if(audio.paused){audio.muted=false;await audio.play()}else{audio.muted=!audio.muted;if(audio.muted)await audio.pause();else await audio.play()}
-    const on=!audio.paused && !audio.muted; btn.classList.toggle('active',on); if(on) btn.classList.remove('show'); localStorage.setItem('bgm_pref',on?'on':'off')}catch{}})
-})();
+/* failsafe: if not on minigame, keep modal hidden */
+setInterval(()=>{ if (state.tab !== 'minigame') closeGate(); }, 500);
 </script>
 </body>
 </html>
