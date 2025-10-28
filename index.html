@@ -167,12 +167,17 @@ const isLinked = () =>
   !!localStorage.getItem('player_provider_id') ||
   !!localStorage.getItem('auth_token');
 
-/* ===== gate ===== */
+// ===== gate (only visible while Mini Game tab is active) =====
 function openGate(){
-  if (state.tab !== 'minigame') return;  // ✅ only Mini Game can open it
-  const m = $('#gate'); if (m) m.classList.remove('hidden');
+  if (state.tab !== 'minigame') return;           // hard guard
+  const m = document.getElementById('gate');
+  if (m) m.classList.remove('hidden');
 }
-function closeGate(){ $('#gate')?.classList.add('hidden'); }
+function closeGate(){
+  const m = document.getElementById('gate');
+  if (m && !m.classList.contains('hidden')) m.classList.add('hidden');
+}
+
 
 /* finalize link */
 async function finalizeLink(username){
@@ -199,13 +204,20 @@ async function finalizeLink(username){
 /* ===== nav / router ===== */
 function moveInk(ix){ document.querySelector('.iconnav').style.setProperty('--ix', ix); }
 function render(){
-  $('#hdrTitle').textContent = state.tab==='ranks' ? 'Referral Ranking'
-    : state.tab==='terms' ? 'Terms & FAQ'
-    : state.tab==='community' ? 'Community'
-    : state.tab==='minigame' ? 'Mini Game' : 'Referral Race';
+  // header title…
+  document.getElementById('hdrTitle').textContent =
+    state.tab==='ranks' ? 'Referral Ranking' :
+    state.tab==='terms' ? 'Terms & FAQ' :
+    state.tab==='community' ? 'Community' :
+    state.tab==='minigame' ? 'Mini Game' : 'Referral Race';
 
-  /* ✅ force-close gate on any non-Mini-Game view */
+  // **force-close the gate if you’re not on minigame**
   if (state.tab !== 'minigame') closeGate();
+
+  // tab active state + inkbar…
+  // then route to view…
+}
+
 
   $all('.iconnav .itab').forEach(b=>b.classList.toggle('active',b.dataset.tab===state.tab));
   moveInk(parseInt(document.querySelector('.iconnav .itab.active')?.dataset.idx||'0',10));
@@ -411,16 +423,24 @@ function renderMiniGame(){
   stopGame();
 }
 
-/* bottom nav: open gate only when Mini Game clicked and not linked */
-$all('.iconnav .itab').forEach(btn=>{
+// bottom nav
+document.querySelectorAll('.iconnav .itab').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    const tab=btn.getAttribute('data-tab');
-    state.tab=tab;
-    if(tab==='minigame' && !isLinked()) openGate();
+    const tab = btn.getAttribute('data-tab');
+
+    // always close the modal first
+    closeGate();
+
+    state.tab = tab;
+    if (tab === 'minigame' && !isLinked()) {
+      // render first so the title/tab state updates, then open
+      render();
+      openGate();
+      return;
+    }
     render();
   });
 });
-
 /* gate buttons & UX */
 document.addEventListener('click',e=>{
   if(e.target.id==='gateClose') closeGate();
