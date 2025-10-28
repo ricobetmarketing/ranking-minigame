@@ -53,7 +53,7 @@
   .rr .go:active{transform:translateY(1px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
   .rr .result{margin-top:8px;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.08);color:#2b2350;border-radius:12px;padding:10px 12px;font-weight:700;display:none}
 
-  /* NAV */
+  /* NAV (4 tabs) */
   .iconnav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));width:min(520px,100% - 12px);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px;background:rgba(16,17,42,.98);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:16px;z-index:1000;--hot:#ff4fd8;--hot2:#ff9ae8;--ix:0}
   .iconnav .itab{appearance:none;border:0;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;color:#cdd7ff;font-weight:800;border-radius:14px}
   .iconnav .itab span{font-size:11px}
@@ -77,14 +77,15 @@
   .mg-canvas{display:block;width:100%;height:340px;background:linear-gradient(180deg,#0a0e24,#060814)}
   .tip{font-size:12px;color:#b7c3ff;margin-top:8px}
 
-  /* MODAL */
-  .hidden{display:none}
-  .modalBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;z-index:2000}
+  /* MODAL — default hidden; only shows when body.gate-open is present */
+  .modalBackdrop{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.55);z-index:2000}
+  .gate-open #gate{display:grid}
   .modalCard{width:min(460px,92vw);border-radius:16px;padding:16px;background:linear-gradient(180deg,#151533,#10112a);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 38px rgba(0,0,0,.35);position:relative}
   .modalCard h3{margin:0 0 10px}
   .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:900;cursor:pointer}
   .btnPrimary{background:#ffd86a;color:#361e00;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+  .inp{width:100%;border-radius:10px;border:1px solid var(--edge);background:#0f1030;color:#eff3ff;padding:10px 12px}
   .dim{font-size:12px;color:#aeb9ff}
   .closeX{position:absolute;right:10px;top:10px;background:transparent;border:0;color:#cfd8ff;font-weight:900;font-size:16px;cursor:pointer}
 </style>
@@ -100,7 +101,7 @@
     <main id="view"></main>
   </div>
 
-  <!-- Bottom Nav (4 tabs) -->
+  <!-- Bottom Nav -->
   <nav class="iconnav" aria-label="Primary">
     <div class="inkbar" aria-hidden="true"></div>
     <button class="itab active" data-tab="home" data-idx="0" aria-label="Home">
@@ -117,8 +118,8 @@
     </button>
   </nav>
 
-  <!-- Login Gate (opens ONLY on Mini Game if not linked) -->
-  <div id="gate" class="modalBackdrop hidden" role="dialog" aria-modal="true">
+  <!-- Login Gate (only visible when body.gate-open) -->
+  <div id="gate" class="modalBackdrop" role="dialog" aria-modal="true">
     <div class="modalCard">
       <button id="gateClose" class="closeX" aria-label="Close">✕</button>
       <h3>Login required</h3>
@@ -128,6 +129,10 @@
         <span class="dim">Then tap <b>PLAY NOW</b> in the bot.</span>
       </div>
       <p class="dim" id="gateHint" style="margin-top:8px">Waiting for return via PLAY NOW…</p>
+      <div class="row" style="margin-top:8px">
+        <input id="pasteToken" class="inp" placeholder="Paste PLAY NOW link or token and Unlock"/>
+        <button id="useToken" class="btn btnPrimary">Unlock</button>
+      </div>
     </div>
   </div>
 
@@ -135,7 +140,7 @@
 /* ===== CONFIG ===== */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxo_JlcM5rL9v7quZ_HViaSStZ9L7pAPCZ_E1YUHsIGf7KV8fs4MRo2NBkb4qI7x1i6wA/exec";
 
-/* Leaderboard sheet (your public/ranking sheet) */
+/* Leaderboard (public) */
 const RANK_SHEET_ID  = "1rJg4RYn0AkvsqhVGk5CwhZrYNz0gFC6_7ZPiDXigU-o";
 const RANK_SHEET_GID = "0";
 
@@ -144,7 +149,7 @@ const $=(s,el)=> (el||document).querySelector(s);
 const $all=(s,el)=> Array.from((el||document).querySelectorAll(s));
 const fmt=n=>{n=Number(n||0);return n>=1000?(Math.round(n/100)/10).toLocaleString()+"K":n.toLocaleString()};
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const faceBg=url=> `url("data:image/svg+xml;utf8,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23a0c4ff'/><stop offset='100%' stop-color='%238f6bff'/></linearGradient></defs><rect width='64' height='64' rx='16' fill='url(%23g)'/><circle cx='32' cy='26' r='12' fill='white' opacity='.9'/><rect x='14' y='40' width='36' height='16' rx='8' fill='white' opacity='.9'/></svg>")}")`;
+const faceBg=url=>`url("data:image/svg+xml;utf8,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23a0c4ff'/><stop offset='100%' stop-color='%238f6bff'/></linearGradient></defs><rect width='64' height='64' rx='16' fill='url(%23g)'/><circle cx='32' cy='26' r='12' fill='white' opacity='.9'/><rect x='14' y='40' width='36' height='16' rx='8' fill='white' opacity='.9'/></svg>")}")`;
 const unique=a=>Array.from(new Set(a));
 const qs = new URLSearchParams(location.search);
 
@@ -152,12 +157,17 @@ const qs = new URLSearchParams(location.search);
 let state={tab:'home'};
 let ALL=[],WEEKS=[],CUR_WEEK='',TOP100=[];
 
-/* Linked check (token present) */
+/* token present? */
 const isLinked = () => !!localStorage.getItem('auth_token');
 
-/* ===== gate (ONLY while Mini Game tab active) ===== */
-function openGate(){ if (state.tab!=='minigame') return; $('#gate')?.classList.remove('hidden'); }
-function closeGate(){ $('#gate')?.classList.add('hidden'); }
+/* ===== gate controls — CSS + JS guard ===== */
+function openGate(){
+  if (state.tab !== 'minigame') return;        // JS hard guard
+  document.body.classList.add('gate-open');    // CSS gate
+}
+function closeGate(){
+  document.body.classList.remove('gate-open');
+}
 
 /* ===== router ===== */
 function moveInk(ix){ document.querySelector('.iconnav').style.setProperty('--ix', ix); }
@@ -167,7 +177,7 @@ function render(){
     state.tab==='community' ? 'Community' :
     state.tab==='minigame' ? 'Mini Game' : 'Referral Race';
 
-  if (state.tab !== 'minigame') closeGate();
+  if (state.tab !== 'minigame') closeGate();   // force-close off Mini Game
 
   $all('.iconnav .itab').forEach(b=>b.classList.toggle('active',b.dataset.tab===state.tab));
   moveInk(parseInt(document.querySelector('.iconnav .itab.active')?.dataset.idx||'0',10));
@@ -178,7 +188,7 @@ function render(){
   else renderHome();
 }
 
-/* ===== HOME (+ T&C combined) ===== */
+/* ===== HOME (+ T&C) ===== */
 function renderHome(){
   $('#view').innerHTML = `
     <div class="card">
@@ -201,7 +211,7 @@ function renderHome(){
     </div>`;
 }
 
-/* ====== RANKS (reads your sheet gid=0) ====== */
+/* ====== RANKS ====== */
 async function fetchGViz(){
   const url=`https://docs.google.com/spreadsheets/d/${RANK_SHEET_ID}/gviz/tq?tqx=out:json&gid=${encodeURIComponent(RANK_SHEET_GID)}`;
   const text=await fetch(url,{cache:"no-store"}).then(r=>r.text());
@@ -213,7 +223,6 @@ async function fetchGViz(){
 }
 function pickIndex(headers,aliases){const L=headers.map(h=>String(h||'').toLowerCase());for(const a of aliases){const j=L.findIndex(h=>h.includes(a));if(j>-1)return j}return -1}
 function normalize({headers:h,rows}){
-  // be tolerant to header names
   const ui=pickIndex(h,["rico_username","username","player","name"]);
   const pi=pickIndex(h,["points","score","total","referrals"]);
   const wi=pickIndex(h,["week_label","week","period"]);
@@ -252,7 +261,6 @@ function renderRanks(){
 
   if(!ALL.length){
     fetchGViz().then(normalize).then(items=>{
-      // aggregate by week + username (sum points)
       const agg=new Map();
       for(const it of items){
         const key=it.week+"||"+it.username;
@@ -326,7 +334,7 @@ function renderCommunity(){
 function renderMiniGame(){
   if(!isLinked()){
     $('#view').innerHTML=`<div class="card"><h2>Mini Game</h2><p class="dim">Tap the Mini Game tab again to open login.</p></div>`;
-    openGate();
+    openGate();          // will only show because tab === 'minigame'
     return;
   }
 
@@ -415,15 +423,13 @@ function renderMiniGame(){
   stopGame();
 }
 
-/* bottom nav — open gate ONLY when Mini Game clicked and not linked */
-$all('.iconnav .itab').forEach(btn=>{
+/* bottom nav — ONLY opens modal on Mini Game when not linked */
+document.querySelectorAll('.iconnav .itab').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    const tab=btn.getAttribute('data-tab');
-    state.tab=tab;
-    if(tab==='minigame' && !isLinked()){
-      render();
-      openGate();
-      return;
+    closeGate();                               // hard close first
+    state.tab = btn.getAttribute('data-tab');
+    if(state.tab==='minigame' && !isLinked()){
+      render(); openGate(); return;            // modal only now
     }
     render();
   });
@@ -436,31 +442,41 @@ document.addEventListener('click',e=>{
     localStorage.setItem('await_bot_return','1');
     $('#gateHint').textContent='After submitting your username in the bot, tap PLAY NOW to return.';
   }
+  if(e.target.id==='useToken'){
+    const raw = ($('#pasteToken').value||'').trim();
+    if(!raw) return;
+    let tok = raw;
+    try{ const u = new URL(raw); tok = u.searchParams.get('token') || raw; }catch{}
+    localStorage.setItem('auth_token', tok);
+    (async()=>{ try{
+      const r = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'whoami',token:tok})});
+      const j = await r.json();
+      if(j.ok && j.user) localStorage.setItem('player_name', j.user.rico_username || j.user.telegram_username || 'player');
+    }catch{} finally{ state.tab='minigame'; render(); closeGate(); }})();
+  }
 });
 
-/* deep link: ?token=...&play=1 unlocks instantly */
+/* deep link: ?token=... (&play=1 optional) */
 (async function bootAuthFromParams(){
   const token = (qs.get('token')||'').trim();
   const play  = qs.get('play')==='1';
   if(token){
     localStorage.setItem('auth_token', token);
     try{
-      const r = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({kind:'whoami',token})});
+      const r = await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'whoami',token})});
       const j = await r.json();
       if(j.ok && j.user){
         localStorage.setItem('player_name', j.user.rico_username || j.user.telegram_username || 'player');
       }
-    }catch(e){}
-    if(play){ state.tab='minigame'; }
+    }catch{}
+    const wasWaiting = localStorage.getItem('await_bot_return')==='1';
+    if(play || wasWaiting){ localStorage.removeItem('await_bot_return'); state.tab='minigame'; }
   }
 })();
 
-/* boot UI */
+/* initial UI + extra safety */
 render(); moveInk(0);
-
-/* failsafe: if not on minigame, keep modal hidden */
-setInterval(()=>{ if (state.tab !== 'minigame') closeGate(); }, 500);
+setInterval(()=>{ if (state.tab!=='minigame') closeGate(); }, 400);
 </script>
 </body>
 </html>
